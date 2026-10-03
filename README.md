@@ -2,7 +2,7 @@
 
 A [Better Lyrics](https://github.com/better-lyrics/better-lyrics) theme that brings the [Spicy Lyrics](https://github.com/Spikerko/spicy-lyrics) look to YouTube Music.
 
-![Word bounce and background vocals](images/1.png)
+![Word bounce and background vocals](images/1.webp)
 
 See [DESCRIPTION.md](DESCRIPTION.md) for the full feature list.
 
