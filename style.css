@@ -980,7 +980,8 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
   font-family: var(--spicy-font) !important;
 }
 
-/* title and artist scale with the cover, like the Spicy NowBar */
+/* title and artist scale with the cover, like the Spicy NowBar (weight 700
+   title, 85%/80% max-width with soft horizontal edge fade masks) */
 ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]) #blyrics-song-info > p#blyrics-title {
   font-family: var(--spicy-font) !important;
   font-size: calc(var(--spicy-fs-art-size) * 0.054);
@@ -988,6 +989,26 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]) #blyrics-song-info >
   opacity: 0.95;
   letter-spacing: -0.015em;
   line-height: 1.25;
+  max-width: 85%;
+  margin-inline: auto;
+  padding-inline: 2.5%;
+  text-overflow: clip;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #fff 2.5%,
+    #000 2.5%,
+    #000 calc(100% - 3.75%),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #fff 2.5%,
+    #000 2.5%,
+    #000 calc(100% - 3.75%),
+    transparent 100%
+  );
 }
 
 ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]) #blyrics-song-info > p#blyrics-artist {
@@ -996,7 +1017,27 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]) #blyrics-song-info >
   font-weight: 400;
   opacity: 0.7;
   margin-top: 0.35rem;
+  margin-inline: auto;
+  max-width: 80%;
+  padding-inline: 2.5%;
   letter-spacing: -0.005em;
+  text-overflow: clip;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #fff 2.5%,
+    #000 2.5%,
+    #000 calc(100% - 3.75%),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #fff 2.5%,
+    #000 2.5%,
+    #000 calc(100% - 3.75%),
+    transparent 100%
+  );
 }
 
 /* artist links: smooth opacity hover feedback matching Spicy */
@@ -1174,6 +1215,44 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
 .blyrics-fs-play svg {
   width: 72%;
   height: 72%;
+}
+
+/* rating buttons (like/dislike): Spicy NowBar .Heart 0.85s spring scale on the icon */
+:is(.blyrics-fs-like, .blyrics-fs-dislike) .blyrics-fs-rate-icon {
+  transition: scale 0.85s
+    linear(
+      0,
+      0.009 0.9%,
+      0.037 1.9%,
+      0.088 3%,
+      0.155 4.1%,
+      0.307 6.1%,
+      0.783 11.7%,
+      1.007 15%,
+      1.088 16.6%,
+      1.146 18.1%,
+      1.189 19.7%,
+      1.215 21.4%,
+      1.224 23.6%,
+      1.207 26%,
+      1.171 28.4%,
+      1.057 34.4%,
+      1.009 37.4%,
+      0.971 40.8%,
+      0.953 44.2%,
+      0.953 49.1%,
+      0.997 60.4%,
+      1.01 66.8%,
+      1
+    );
+}
+
+:is(.blyrics-fs-like, .blyrics-fs-dislike):hover .blyrics-fs-rate-icon {
+  scale: 0.925;
+}
+
+:is(.blyrics-fs-like, .blyrics-fs-dislike):active .blyrics-fs-rate-icon {
+  scale: 1.245;
 }
 
 /* progress bar: thicker rounded track, knob only on hover or drag */
@@ -1732,7 +1811,7 @@ ytmusic-player-bar :is(.left-controls-buttons, .right-controls-buttons, .middle-
   max-width: clamp(0px, 46em, 100%);
   padding-inline: var(--spicy-line-side-padding) !important;
   padding-top: clamp(0.75em, 1.2cqw, 1.35em) !important;
-  padding-bottom: 0.2em !important;
+  padding-bottom: 0.15em !important;
   opacity: var(--blyrics-credits-opacity);
   transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1);
 }
@@ -1740,6 +1819,7 @@ ytmusic-player-bar :is(.left-controls-buttons, .right-controls-buttons, .middle-
 /* songwriter names stay at 70% white while the "Written by" label sits quieter at 55% */
 .blyrics-credits__text {
   color: var(--spicy-credits-text);
+  font-size: clamp(13px, calc(var(--blyrics-font-size) * 0.4), 22px) !important;
   font-weight: 600;
   line-height: 1.35;
   text-wrap: pretty;
@@ -1766,21 +1846,35 @@ ytmusic-player-bar :is(.left-controls-buttons, .right-controls-buttons, .middle-
 
 .blyrics-container > .blyrics--line:is([data-agent="v2"], [data-agent="v3"], [data-agent="v1000"]) + .blyrics-credits + .blyrics-footer,
 .blyrics-container > .blyrics--line:is([data-agent="v2"], [data-agent="v3"], [data-agent="v1000"]) + .blyrics-footer {
-  justify-content: flex-end;
+  justify-content: flex-end !important;
+  text-align: right;
 }
 
 /* Second footnote row (Source provider & community contributor):
-   sits directly under the songwriters instead of 6rem lower, without pill boxes */
+   sits directly under the songwriters on one inline row, scaled proportionally
+   to --blyrics-font-size (86% of the songwriters line, as in Spicy) */
 .blyrics-container > .blyrics-footer {
   --spicy-credits-text: color-mix(in srgb, #fff 70%, transparent);
   --spicy-credits-muted: color-mix(in srgb, #fff 55%, transparent);
   height: auto !important;
-  margin-top: 0.25rem !important;
+  margin-top: 0.15rem !important;
   padding-inline: var(--spicy-line-side-padding) !important;
-  gap: 0.4rem 0.75rem !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 0.25rem 0 !important;
   font-family: "SF Pro Text", var(--spicy-font) !important;
+  font-size: clamp(12px, calc(var(--blyrics-font-size) * 0.345), 19px) !important;
+  transform: scale(var(--blyrics-scale));
+  transform-origin: left center;
   opacity: var(--blyrics-credits-opacity);
   transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.blyrics-container > .blyrics--line:is([data-agent="v2"], [data-agent="v3"], [data-agent="v1000"]) + .blyrics-credits + .blyrics-footer,
+.blyrics-container > .blyrics--line:is([data-agent="v2"], [data-agent="v3"], [data-agent="v1000"]) + .blyrics-footer {
+  transform-origin: right center;
 }
 
 .blyrics-container > .blyrics-footer:hover,
@@ -1789,39 +1883,37 @@ ytmusic-player-bar :is(.left-controls-buttons, .right-controls-buttons, .middle-
   opacity: var(--blyrics-credits-focused-opacity);
 }
 
-/* keep the footer at a steady 1:1 scale on hover like Spicy's footnote */
+/* keep the footer at a steady scale on hover like Spicy's footnote */
 .blyrics-container > .blyrics-footer:hover {
   transform: scale(var(--blyrics-scale)) !important;
 }
 
-/* hide non-credit promotional pills (Discord and Shaders banner) */
-.blyrics-footer__discord,
-.blyrics-footer__container.blyrics-footer__shaders {
+/* hide action/promo pills ("Search on Genius", "Submit to Unison", Discord, Shaders)
+   so only the actual Source and Unison lyric creator remain */
+.blyrics-footer > :not(:has(#betterLyricsFooterLink), .blyrics-footer__unison) {
   display: none !important;
 }
 
 /* provider line ("Source: ..."): plain footnote text instead of a bordered pill */
-.blyrics-footer__container:not(.blyrics-footer__unison-card) {
+.blyrics-footer__container:has(#betterLyricsFooterLink) {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
   border-radius: 0 !important;
   padding: 0 !important;
   font-family: "SF Pro Text", var(--spicy-font) !important;
-  font-size: clamp(12px, 0.38em, 15px) !important;
+  font-size: inherit !important;
   font-weight: 500 !important;
   line-height: 1.35 !important;
   color: var(--spicy-credits-muted) !important;
 }
 
-.blyrics-footer__container:not(.blyrics-footer__unison-card) > img {
-  width: 1.15em !important;
-  height: 1.15em !important;
-  margin: 0 0.4em 0 0 !important;
-  opacity: 0.8;
+/* hide the red Better Lyrics logo icon before "Source:" to match Spicy's clean text */
+.blyrics-footer__container:has(#betterLyricsFooterLink) > img {
+  display: none !important;
 }
 
-.blyrics-footer__container:not(.blyrics-footer__unison-card) > a {
+.blyrics-footer__container:has(#betterLyricsFooterLink) > a {
   color: var(--spicy-credits-text) !important;
   font-weight: 600 !important;
   text-decoration: underline !important;
@@ -1833,21 +1925,32 @@ ytmusic-player-bar :is(.left-controls-buttons, .right-controls-buttons, .middle-
     text-decoration-color 0.15s ease;
 }
 
-.blyrics-footer__container:not(.blyrics-footer__unison-card):hover > a,
-.blyrics-footer__container:not(.blyrics-footer__unison-card) > a:is(:hover, :focus-visible) {
+.blyrics-footer__container:has(#betterLyricsFooterLink):hover > a,
+.blyrics-footer__container:has(#betterLyricsFooterLink) > a:is(:hover, :focus-visible) {
   color: #fff !important;
   text-decoration-color: currentColor !important;
 }
 
 /* community contributor (Unison): stripped to a clean inline footnote showing
-   only who created the lyrics (avatar + name + label), without gamification
-   rings, level numbers, tier pills, achievement gems or voting buttons */
+   only who created the lyrics (avatar + name + label), sitting right after
+   "Source: Unison" separated by a middle dot, just like Spicy Lyrics */
 .blyrics-footer__unison:not(:has(.blyrics-footer__unison-author)) {
   display: none !important;
 }
 
 .blyrics-footer__unison {
-  margin-top: 0.1rem !important;
+  flex-basis: auto !important;
+  width: auto !important;
+  margin-top: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+.blyrics-footer__unison::before {
+  content: "\00b7";
+  margin-inline: 0.45em;
+  color: var(--spicy-credits-muted);
+  font-weight: 500;
 }
 
 .blyrics-footer__container.blyrics-footer__unison-card,
@@ -1860,6 +1963,7 @@ ytmusic-player-bar :is(.left-controls-buttons, .right-controls-buttons, .middle-
   gap: 0.35em !important;
   cursor: default !important;
   font-family: "SF Pro Text", var(--spicy-font) !important;
+  font-size: inherit !important;
 }
 
 /* hide divider, voting/report buttons, score counter, XP ring, level badge, tier and gems */
@@ -1883,7 +1987,7 @@ ytmusic-player-bar :is(.left-controls-buttons, .right-controls-buttons, .middle-
   align-items: center !important;
   flex-wrap: wrap !important;
   gap: 0.35em !important;
-  font-size: clamp(12px, 0.38em, 15px) !important;
+  font-size: inherit !important;
   line-height: 1.35 !important;
 }
 
