@@ -53,9 +53,9 @@ blyrics-line-scroll-below-duration = 700ms;
   /* background vocals relative size */
   --spicy-bg-vocal-size: 0.75em;
 
-  /* credits brightness matched to Spicy Lyrics (0.6 during song, 0.85 when focused) */
-  --spicy-credits-opacity: 0.6;
-  --spicy-credits-focused-opacity: 0.85;
+  /* credits brightness matched to Spicy Lyrics Refined Credits (0.55 while playing, 1 when focused) */
+  --spicy-credits-opacity: 0.55;
+  --spicy-credits-focused-opacity: 1;
 
   /* animated background */
   --spicy-bg-duration: 45s;
@@ -1715,23 +1715,208 @@ ytmusic-player-bar :is(.left-controls-buttons, .right-controls-buttons, .middle-
 }
 
 /* ---------------------------------------------------------------------------
-   8. Credits
+   8. Credits & Footer (Spicy Lyrics Refined Credits)
+      Quiet footnote typography close under the last lyric line: songwriters
+      first, then the source/contributor row, set apart by size and tone
+      rather than a pill box or border.
    ------------------------------------------------------------------------ */
-.blyrics-credits {
-  color: white;
+.blyrics-container > .blyrics-credits {
+  --spicy-credits-text: color-mix(in srgb, #fff 70%, transparent);
+  --spicy-credits-muted: color-mix(in srgb, #fff 55%, transparent);
+  font-family: "SF Pro Text", var(--spicy-font) !important;
+  color: var(--spicy-credits-text);
   font-weight: 600;
+  line-height: 1.35;
   letter-spacing: 0;
+  text-wrap: pretty;
+  max-width: clamp(0px, 46em, 100%);
+  padding-inline: var(--spicy-line-side-padding) !important;
+  padding-top: clamp(0.75em, 1.2cqw, 1.35em) !important;
+  padding-bottom: 0.2em !important;
   opacity: var(--blyrics-credits-opacity);
   transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.blyrics-credits:hover {
-  opacity: var(--blyrics-credits-focused-opacity);
+/* songwriter names stay at 70% white while the "Written by" label sits quieter at 55% */
+.blyrics-credits__text {
+  color: var(--spicy-credits-text);
+  font-weight: 600;
+  line-height: 1.35;
+  text-wrap: pretty;
 }
 
+.blyrics-credits__text::before {
+  color: var(--spicy-credits-muted);
+  font-weight: 500;
+}
+
+.blyrics-credits:hover,
 .blyrics-container[data-credits-focused] > .blyrics-credits,
 .blyrics-container[data-sync="none"] > .blyrics-credits {
   opacity: var(--blyrics-credits-focused-opacity);
+}
+
+/* CreditsFollowLastLine: when the last lyric line is a right-aligned secondary
+   voice, the narrower credits and footer block aligns to the right side too */
+.blyrics-container > .blyrics--line:is([data-agent="v2"], [data-agent="v3"], [data-agent="v1000"]) + .blyrics-credits {
+  margin-inline-start: auto !important;
+  text-align: right;
+  transform-origin: right center;
+}
+
+.blyrics-container > .blyrics--line:is([data-agent="v2"], [data-agent="v3"], [data-agent="v1000"]) + .blyrics-credits + .blyrics-footer,
+.blyrics-container > .blyrics--line:is([data-agent="v2"], [data-agent="v3"], [data-agent="v1000"]) + .blyrics-footer {
+  justify-content: flex-end;
+}
+
+/* Second footnote row (Source provider & community contributor):
+   sits directly under the songwriters instead of 6rem lower, without pill boxes */
+.blyrics-container > .blyrics-footer {
+  --spicy-credits-text: color-mix(in srgb, #fff 70%, transparent);
+  --spicy-credits-muted: color-mix(in srgb, #fff 55%, transparent);
+  height: auto !important;
+  margin-top: 0.25rem !important;
+  padding-inline: var(--spicy-line-side-padding) !important;
+  gap: 0.4rem 0.75rem !important;
+  font-family: "SF Pro Text", var(--spicy-font) !important;
+  opacity: var(--blyrics-credits-opacity);
+  transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.blyrics-container > .blyrics-footer:hover,
+.blyrics-container[data-credits-focused] > .blyrics-footer,
+.blyrics-container[data-sync="none"] > .blyrics-footer {
+  opacity: var(--blyrics-credits-focused-opacity);
+}
+
+/* keep the footer at a steady 1:1 scale on hover like Spicy's footnote */
+.blyrics-container > .blyrics-footer:hover {
+  transform: scale(var(--blyrics-scale)) !important;
+}
+
+/* hide non-credit promotional pills (Discord and Shaders banner) */
+.blyrics-footer__discord,
+.blyrics-footer__container.blyrics-footer__shaders {
+  display: none !important;
+}
+
+/* provider line ("Source: ..."): plain footnote text instead of a bordered pill */
+.blyrics-footer__container:not(.blyrics-footer__unison-card) {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  font-family: "SF Pro Text", var(--spicy-font) !important;
+  font-size: clamp(12px, 0.38em, 15px) !important;
+  font-weight: 500 !important;
+  line-height: 1.35 !important;
+  color: var(--spicy-credits-muted) !important;
+}
+
+.blyrics-footer__container:not(.blyrics-footer__unison-card) > img {
+  width: 1.15em !important;
+  height: 1.15em !important;
+  margin: 0 0.4em 0 0 !important;
+  opacity: 0.8;
+}
+
+.blyrics-footer__container:not(.blyrics-footer__unison-card) > a {
+  color: var(--spicy-credits-text) !important;
+  font-weight: 600 !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 1px !important;
+  text-underline-offset: 0.18em !important;
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent) !important;
+  transition:
+    color 0.15s ease,
+    text-decoration-color 0.15s ease;
+}
+
+.blyrics-footer__container:not(.blyrics-footer__unison-card):hover > a,
+.blyrics-footer__container:not(.blyrics-footer__unison-card) > a:is(:hover, :focus-visible) {
+  color: #fff !important;
+  text-decoration-color: currentColor !important;
+}
+
+/* community contributor (Unison): stripped to a clean inline footnote showing
+   only who created the lyrics (avatar + name + label), without gamification
+   rings, level numbers, tier pills, achievement gems or voting buttons */
+.blyrics-footer__unison:not(:has(.blyrics-footer__unison-author)) {
+  display: none !important;
+}
+
+.blyrics-footer__unison {
+  margin-top: 0.1rem !important;
+}
+
+.blyrics-footer__container.blyrics-footer__unison-card,
+.blyrics-footer__container.blyrics-footer__unison-card:hover {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  gap: 0.35em !important;
+  cursor: default !important;
+  font-family: "SF Pro Text", var(--spicy-font) !important;
+}
+
+/* hide divider, voting/report buttons, score counter, XP ring, level badge, tier and gems */
+.blyrics-footer__unison-divider,
+.blyrics-footer__unison-actions-block,
+.blyrics-gam__ring svg,
+.blyrics-gam__ring-num,
+.blyrics-gam__ring-level,
+.blyrics-gam__ring:not(.blyrics-gam__ring--avatar),
+.blyrics-gam__tier,
+.blyrics-gam__tier-slot,
+.blyrics-gam__featured,
+.blyrics-gam__featured-slot-outer,
+.blyrics-gam__seal {
+  display: none !important;
+}
+
+/* lay out avatar, creator name and "submitted this lyric" label on one line */
+.blyrics-footer__unison-author {
+  flex-direction: row !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 0.35em !important;
+  font-size: clamp(12px, 0.38em, 15px) !important;
+  line-height: 1.35 !important;
+}
+
+.blyrics-footer__unison-author-row {
+  gap: 0.35em !important;
+  font-size: inherit !important;
+}
+
+/* clean circular avatar without the level-badge cutout mask */
+.blyrics-gam__ring.blyrics-gam__ring--avatar {
+  width: 1.2em !important;
+  height: 1.2em !important;
+  display: inline-flex !important;
+}
+
+.blyrics-gam__ring-avatar {
+  width: 100% !important;
+  height: 100% !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+  border-radius: 50% !important;
+  opacity: 0.85;
+}
+
+.blyrics-footer__author-name {
+  color: var(--spicy-credits-text) !important;
+  font-weight: 600 !important;
+}
+
+.blyrics-footer__unison-author-label {
+  color: var(--spicy-credits-muted) !important;
+  font-size: inherit !important;
+  font-weight: 500 !important;
 }
 
 /* ---------------------------------------------------------------------------
