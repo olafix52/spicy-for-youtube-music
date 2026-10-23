@@ -15,3 +15,7 @@ See [DESCRIPTION.md](DESCRIPTION.md) for the full feature list.
 ## Tuning
 
 Open `style.css` and edit the **Tunables** block at the top.
+
+## License
+
+This project is licensed under the GNU Affero General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
