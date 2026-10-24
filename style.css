@@ -2207,6 +2207,209 @@ ytmusic-player-bar :is(.left-controls-buttons, .right-controls-buttons, .middle-
 }
 
 /* ---------------------------------------------------------------------------
+   8c. Side-Panel Tab Bar (Icons-only Spicy Liquid Glass Capsule)
+       Replaces the wide uppercase text header ("UP NEXT | LYRICS | RELATED")
+       and harsh bottom underline with a compact centered Liquid Glass pill
+       housing 4 minimalist icons and a smooth sliding active indicator.
+   ------------------------------------------------------------------------ */
+ytmusic-player-page #side-panel tp-yt-paper-tabs.tab-header-container {
+  --spicy-tab-width: 48px;
+  --spicy-tab-height: 36px;
+  --spicy-tab-gap: 4px;
+  width: fit-content !important;
+  max-width: 100% !important;
+  height: 44px !important;
+  margin: 0 auto 10px !important;
+  padding: 4px 6px !important;
+  border-bottom: none !important;
+  border-radius: 999px !important;
+  background: rgba(0, 0, 0, 0.14) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(1.7) brightness(1.06) !important;
+  backdrop-filter: blur(16px) saturate(1.7) brightness(1.06) !important;
+  box-shadow:
+    0 10px 24px -6px rgba(8, 10, 18, 0.42),
+    0 2px 6px -1px rgba(8, 10, 18, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.2) !important;
+  overflow: visible !important;
+}
+
+ytmusic-player-page #side-panel tp-yt-paper-tabs.tab-header-container > tp-yt-paper-icon-button,
+ytmusic-player-page #side-panel #selectionBar,
+ytmusic-player-page #side-panel tp-yt-paper-tab.tab-header tp-yt-paper-ripple {
+  display: none !important;
+}
+
+ytmusic-player-page #side-panel tp-yt-paper-tabs.tab-header-container #tabsContainer,
+ytmusic-player-page #side-panel tp-yt-paper-tabs.tab-header-container #tabsContent {
+  position: relative !important;
+  inset: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--spicy-tab-gap) !important;
+  width: fit-content !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+/* Sliding Liquid Glass active pill behind the selected tab */
+ytmusic-player-page #side-panel tp-yt-paper-tabs.tab-header-container #tabsContent::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  margin-block: auto;
+  width: var(--spicy-tab-width);
+  height: var(--spicy-tab-height);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+  transition:
+    transform 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.2s ease,
+    background-color 0.2s ease;
+}
+
+ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header.iron-selected)::before {
+  opacity: 1;
+}
+
+ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header:nth-of-type(1).iron-selected)::before {
+  transform: translate3d(0, 0, 0);
+}
+
+ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header:nth-of-type(2).iron-selected)::before {
+  transform: translate3d(calc(1 * (var(--spicy-tab-width) + var(--spicy-tab-gap))), 0, 0);
+}
+
+ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header:nth-of-type(3).iron-selected)::before {
+  transform: translate3d(calc(2 * (var(--spicy-tab-width) + var(--spicy-tab-gap))), 0, 0);
+}
+
+ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header:nth-of-type(4).iron-selected)::before {
+  transform: translate3d(calc(3 * (var(--spicy-tab-width) + var(--spicy-tab-gap))), 0, 0);
+}
+
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header {
+  flex: 0 0 var(--spicy-tab-width) !important;
+  width: var(--spicy-tab-width) !important;
+  height: var(--spicy-tab-height) !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 999px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  z-index: 1 !important;
+  color: rgba(255, 255, 255, 0.55) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transition:
+    color 0.26s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    scale 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Remove .tab-content from flex layout so it never pushes the centered icon */
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header .tab-content {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  flex: 0 0 0px !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  opacity: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  pointer-events: none !important;
+}
+
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header:not(.iron-selected):hover:not([disabled]) {
+  color: rgba(255, 255, 255, 0.88) !important;
+  background: rgba(255, 255, 255, 0.07) !important;
+}
+
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header:active:not([disabled]) {
+  scale: 0.92;
+}
+
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header.iron-selected {
+  color: #ffffff !important;
+  background: transparent !important;
+}
+
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header[disabled] {
+  opacity: 0.28 !important;
+  pointer-events: none !important;
+}
+
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  display: block;
+  width: 20px;
+  height: 20px;
+  background-color: currentColor;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  transition:
+    transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+    filter 0.28s ease;
+}
+
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header.iron-selected::before {
+  transform: scale(1.06);
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.35));
+}
+
+/* Tab 1: Up Next / Queue */
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header:nth-of-type(1)::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns%3D'http://www.w3.org/2000/svg' viewBox%3D'0 0 24 24' fill%3D'black'%3E%3Cpath d%3D'M3 6.2a.9.9 0 0 1 1.38-.76l3.4 2.13a.9.9 0 0 1 0 1.52l-3.4 2.13A.9.9 0 0 1 3 10.46V6.2Zm8.5 1.1a1 1 0 0 1 1-1h7.5a1 1 0 1 1 0 2h-7.5a1 1 0 0 1-1-1Zm0 5.2a1 1 0 0 1 1-1h7.5a1 1 0 1 1 0 2h-7.5a1 1 0 0 1-1-1Zm-7.5 5.2a1 1 0 0 1 1-1h15a1 1 0 1 1 0 2H5a1 1 0 0 1-1-1Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns%3D'http://www.w3.org/2000/svg' viewBox%3D'0 0 24 24' fill%3D'black'%3E%3Cpath d%3D'M3 6.2a.9.9 0 0 1 1.38-.76l3.4 2.13a.9.9 0 0 1 0 1.52l-3.4 2.13A.9.9 0 0 1 3 10.46V6.2Zm8.5 1.1a1 1 0 0 1 1-1h7.5a1 1 0 1 1 0 2h-7.5a1 1 0 0 1-1-1Zm0 5.2a1 1 0 0 1 1-1h7.5a1 1 0 1 1 0 2h-7.5a1 1 0 0 1-1-1Zm-7.5 5.2a1 1 0 0 1 1-1h15a1 1 0 1 1 0 2H5a1 1 0 0 1-1-1Z'/%3E%3C/svg%3E");
+}
+
+/* Tab 2: Lyrics */
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header:nth-of-type(2)::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns%3D'http://www.w3.org/2000/svg' viewBox%3D'0 0 24 24' fill%3D'black'%3E%3Cpath d%3D'M12 3a3.5 3.5 0 0 0-3.5 3.5v5a3.5 3.5 0 0 0 7 0v-5A3.5 3.5 0 0 0 12 3ZM6.5 10.5a1 1 0 0 1 1 1 4.5 4.5 0 0 0 9 0 1 1 0 1 1 2 0 6.5 6.5 0 0 1-5.5 6.42V20h2.5a1 1 0 1 1 0 2h-7a1 1 0 1 1 0-2H11v-2.08A6.5 6.5 0 0 1 5.5 11.5a1 1 0 0 1 1-1Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns%3D'http://www.w3.org/2000/svg' viewBox%3D'0 0 24 24' fill%3D'black'%3E%3Cpath d%3D'M12 3a3.5 3.5 0 0 0-3.5 3.5v5a3.5 3.5 0 0 0 7 0v-5A3.5 3.5 0 0 0 12 3ZM6.5 10.5a1 1 0 0 1 1 1 4.5 4.5 0 0 0 9 0 1 1 0 1 1 2 0 6.5 6.5 0 0 1-5.5 6.42V20h2.5a1 1 0 1 1 0 2h-7a1 1 0 1 1 0-2H11v-2.08A6.5 6.5 0 0 1 5.5 11.5a1 1 0 0 1 1-1Z'/%3E%3C/svg%3E");
+}
+
+/* Tab 3 (when 4 tabs exist): Comments */
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header:nth-of-type(3):not(:last-of-type)::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns%3D'http://www.w3.org/2000/svg' viewBox%3D'0 0 24 24' fill%3D'black'%3E%3Cpath d%3D'M12 3.5c5.25 0 9.5 3.58 9.5 8s-4.25 8-9.5 8c-1.34 0-2.62-.24-3.78-.67L4.3 20.4a.9.9 0 0 1-1.22-.97l.63-3.15A7.46 7.46 0 0 1 2.5 11.5c0-4.42 4.25-8 9.5-8Zm-4 6.5a1 1 0 0 0 0 2h8a1 1 0 1 0 0-2H8Zm0 3.5a1 1 0 0 0 0 2h5a1 1 0 1 0 0-2H8Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns%3D'http://www.w3.org/2000/svg' viewBox%3D'0 0 24 24' fill%3D'black'%3E%3Cpath d%3D'M12 3.5c5.25 0 9.5 3.58 9.5 8s-4.25 8-9.5 8c-1.34 0-2.62-.24-3.78-.67L4.3 20.4a.9.9 0 0 1-1.22-.97l.63-3.15A7.46 7.46 0 0 1 2.5 11.5c0-4.42 4.25-8 9.5-8Zm-4 6.5a1 1 0 0 0 0 2h8a1 1 0 1 0 0-2H8Zm0 3.5a1 1 0 0 0 0 2h5a1 1 0 1 0 0-2H8Z'/%3E%3C/svg%3E");
+}
+
+/* Last tab (Tab 3 or 4): Related / Discover */
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header:last-of-type::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns%3D'http://www.w3.org/2000/svg' viewBox%3D'0 0 24 24' fill%3D'black'%3E%3Cpath d%3D'M10.5 2.5a.8.8 0 0 1 1.5 0l1.38 4.15a3.5 3.5 0 0 0 2.22 2.22l4.15 1.38a.8.8 0 0 1 0 1.5l-4.15 1.38a3.5 3.5 0 0 0-2.22 2.22L12 19.5a.8.8 0 0 1-1.5 0l-1.38-4.15a3.5 3.5 0 0 0-2.22-2.22L2.75 11.75a.8.8 0 0 1 0-1.5l4.15-1.38a3.5 3.5 0 0 0 2.22-2.22L10.5 2.5Zm8 12a.6.6 0 0 1 1.12 0l.58 1.62a1.5 1.5 0 0 0 .96.96l1.62.58a.6.6 0 0 1 0 1.12l-1.62.58a1.5 1.5 0 0 0-.96.96l-.58 1.62a.6.6 0 0 1-1.12 0l-.58-1.62a1.5 1.5 0 0 0-.96-.96l-1.62-.58a.6.6 0 0 1 0-1.12l1.62-.58a1.5 1.5 0 0 0 .96-.96l.58-1.62Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns%3D'http://www.w3.org/2000/svg' viewBox%3D'0 0 24 24' fill%3D'black'%3E%3Cpath d%3D'M10.5 2.5a.8.8 0 0 1 1.5 0l1.38 4.15a3.5 3.5 0 0 0 2.22 2.22l4.15 1.38a.8.8 0 0 1 0 1.5l-4.15 1.38a3.5 3.5 0 0 0-2.22 2.22L12 19.5a.8.8 0 0 1-1.5 0l-1.38-4.15a3.5 3.5 0 0 0-2.22-2.22L2.75 11.75a.8.8 0 0 1 0-1.5l4.15-1.38a3.5 3.5 0 0 0 2.22-2.22L10.5 2.5Zm8 12a.6.6 0 0 1 1.12 0l.58 1.62a1.5 1.5 0 0 0 .96.96l1.62.58a.6.6 0 0 1 0 1.12l-1.62.58a1.5 1.5 0 0 0-.96.96l-.58 1.62a.6.6 0 0 1-1.12 0l-.58-1.62a1.5 1.5 0 0 0-.96-.96l-1.62-.58a.6.6 0 0 1 0-1.12l1.62-.58a1.5 1.5 0 0 0 .96-.96l.58-1.62Z'/%3E%3C/svg%3E");
+}
+
+/* ---------------------------------------------------------------------------
    9. Reduced motion
    ------------------------------------------------------------------------ */
 @media (prefers-reduced-motion: reduce) {
