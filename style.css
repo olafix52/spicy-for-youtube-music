@@ -2316,6 +2316,10 @@ ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header:nt
   transform: translate3d(calc(3 * (var(--spicy-tab-width) + var(--spicy-tab-gap))), 0, 0);
 }
 
+ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header:nth-of-type(5).iron-selected)::before {
+  transform: translate3d(calc(4 * (var(--spicy-tab-width) + var(--spicy-tab-gap))), 0, 0);
+}
+
 ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header {
   flex: 0 0 var(--spicy-tab-width) !important;
   width: var(--spicy-tab-width) !important;
@@ -2456,7 +2460,7 @@ ytmusic-app-layout #main-panel.ytmusic-app-layout {
    is clipped to the drawer, so entries cannot pile up on each other */
 ytmusic-app-layout tp-yt-app-drawer#guide #contentContainer,
 ytmusic-app-layout #guide-wrapper {
-  overflow: hidden;
+  overflow-x: clip;
 }
 
 ytmusic-guide-renderer :is(ytmusic-guide-entry-renderer, ytmusic-guide-section-renderer) :is(.title, .guide-entry-text, yt-formatted-string) {
@@ -2474,6 +2478,7 @@ ytmusic-app-layout #mini-guide-background {
 
 ytmusic-app-layout tp-yt-app-drawer#guide[opened] ~ #mini-guide,
 ytmusic-app-layout tp-yt-app-drawer#guide[opened] ~ #mini-guide-background,
+ytmusic-app-layout:is([guide-opened], [is-guide-open]) :is(#mini-guide, #mini-guide-background),
 ytmusic-app-layout:has(tp-yt-app-drawer#guide[opened]) :is(#mini-guide, #mini-guide-background) {
   opacity: 0 !important;
   transition-delay: 0s !important;
@@ -2526,8 +2531,7 @@ ytmusic-popup-container tp-yt-iron-dropdown {
   }
 }
 
-ytmusic-popup-container tp-yt-iron-dropdown[aria-hidden="true"],
-ytmusic-popup-container tp-yt-iron-dropdown[style*="display: none"] {
+ytmusic-popup-container tp-yt-iron-dropdown[aria-hidden="true"] {
   opacity: 0;
   scale: 0.96;
   translate: 0 6px;
@@ -2539,8 +2543,7 @@ ytmusic-popup-container tp-yt-iron-dropdown:has(ytd-multi-page-menu-renderer) {
   transform-origin: var(--spicy-pop-origin, top right);
 }
 
-ytmusic-popup-container tp-yt-iron-dropdown:has(ytd-multi-page-menu-renderer)[aria-hidden="true"],
-ytmusic-popup-container tp-yt-iron-dropdown:has(ytd-multi-page-menu-renderer)[style*="display: none"] {
+ytmusic-popup-container tp-yt-iron-dropdown:has(ytd-multi-page-menu-renderer)[aria-hidden="true"] {
   translate: 0 -6px;
 }
 
@@ -2607,6 +2610,18 @@ ytmusic-search-box :is(ytmusic-search-suggestions-section, #suggestion-list, .su
    9. Reduced motion
    ------------------------------------------------------------------------ */
 @media (prefers-reduced-motion: reduce) {
+  ytmusic-player-page #side-panel #tabsContent::before,
+  ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header,
+  ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header::before,
+  ytmusic-app-layout tp-yt-app-drawer#guide #contentContainer,
+  ytmusic-app-layout #content.ytmusic-app-layout,
+  ytmusic-app-layout #main-panel.ytmusic-app-layout,
+  ytmusic-app-layout #mini-guide,
+  ytmusic-app-layout #mini-guide-background,
+  ytmusic-player-bar ytmusic-like-button-renderer * {
+    transition: none !important;
+  }
+
   ytmusic-popup-container tp-yt-iron-dropdown {
     transition: none;
   }
