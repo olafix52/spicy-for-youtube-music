@@ -2534,6 +2534,38 @@ ytmusic-popup-container tp-yt-iron-dropdown[style*="display: none"] {
   pointer-events: none;
 }
 
+/* account menu: opens from the top, unlike the context menus that rise */
+ytmusic-popup-container tp-yt-iron-dropdown:has(ytd-multi-page-menu-renderer) {
+  transform-origin: var(--spicy-pop-origin, top right);
+}
+
+ytmusic-popup-container tp-yt-iron-dropdown:has(ytd-multi-page-menu-renderer)[aria-hidden="true"],
+ytmusic-popup-container tp-yt-iron-dropdown:has(ytd-multi-page-menu-renderer)[style*="display: none"] {
+  translate: 0 -6px;
+}
+
+@starting-style {
+  ytmusic-popup-container tp-yt-iron-dropdown:has(ytd-multi-page-menu-renderer) {
+    translate: 0 -8px;
+  }
+}
+
+html ytmusic-popup-container ytd-multi-page-menu-renderer ytd-compact-link-renderer {
+  animation-name: spicy-pop-item-down;
+}
+
+@keyframes spicy-pop-item-down {
+  from {
+    opacity: 0;
+    translate: 0 -4px;
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
 /* menu items cascade in a touch after the panel, like Spicy's lists */
 ytmusic-popup-container :is(ytmusic-menu-popup-renderer, ytd-multi-page-menu-renderer) :is(ytmusic-menu-navigation-item-renderer, ytmusic-menu-service-item-renderer, ytmusic-toggle-menu-service-item-renderer, ytd-compact-link-renderer) {
   animation: spicy-pop-item 0.34s var(--spicy-pop-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
