@@ -2429,60 +2429,54 @@ ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header:last-o
 
 /* ---------------------------------------------------------------------------
    8d. Sidebar expand / collapse (smooth slide, fade and content shift)
-       The left navigation drawer, the collapsed mini bar and the page content
-       margin all animate with one shared spring-like curve, so hiding or
-       revealing the sidebar glides instead of snapping.
+       The left navigation drawer and the collapsed mini bar share one
+       spring-like curve, so hiding or revealing the sidebar glides instead of
+       snapping. Verified against the live DOM: the drawer carries the opened
+       attribute and the mini bar is toggled through an inline display rule.
    ------------------------------------------------------------------------ */
 ytmusic-app-layout {
   --spicy-guide-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --spicy-guide-time: 0.38s;
+  --spicy-guide-width: 240px;
 }
 
-/* drawer panel slides in and out */
+/* the expanded panel keeps its full width in both directions. YouTube Music
+   shrinks it to the 72px bar width the instant it closes, which squeezed the
+   entries on top of the mini bar icons. A fixed width plus a full-width
+   slide-out removes that ghost frame */
 ytmusic-app-layout tp-yt-app-drawer#guide #contentContainer,
-ytmusic-app-layout tp-yt-app-drawer#guide[persistent] #contentContainer {
+ytmusic-app-layout tp-yt-app-drawer#guide #guide-wrapper {
+  width: var(--spicy-guide-width) !important;
+}
+
+ytmusic-app-layout tp-yt-app-drawer#guide #contentContainer {
   transition:
     transform var(--spicy-guide-time) var(--spicy-guide-ease),
     visibility var(--spicy-guide-time) linear !important;
   will-change: transform;
-}
-
-/* page content follows the drawer width instead of jumping (only the
-   side offset animates, so nothing is squeezed or reflowed mid-slide) */
-ytmusic-app-layout #content.ytmusic-app-layout,
-ytmusic-app-layout #main-panel.ytmusic-app-layout {
-  transition:
-    margin-left var(--spicy-guide-time) var(--spicy-guide-ease),
-    padding-left var(--spicy-guide-time) var(--spicy-guide-ease);
-}
-
-/* drawer content never wraps or spills while the panel narrows and
-   is clipped to the drawer, so entries cannot pile up on each other */
-ytmusic-app-layout tp-yt-app-drawer#guide #contentContainer,
-ytmusic-app-layout #guide-wrapper {
   overflow-x: clip;
 }
 
-ytmusic-guide-renderer :is(ytmusic-guide-entry-renderer, ytmusic-guide-section-renderer) :is(.title, .guide-entry-text, yt-formatted-string) {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: clip;
+ytmusic-app-layout tp-yt-app-drawer#guide:not([opened]) #contentContainer {
+  transform: translateX(-100%) !important;
 }
 
-/* the mini bar waits until the drawer has left, then fades in; on the
-   way back it vanishes at once, so the two never overlap */
-ytmusic-app-layout #mini-guide,
-ytmusic-app-layout #mini-guide-background {
-  transition: opacity 0.2s ease 0.18s !important;
+/* the mini bar stays in layout and cross-fades: it fades out just after the
+   panel starts covering it and fades back in once the panel is leaving */
+ytmusic-app-layout #mini-guide {
+  display: block !important;
+  opacity: 1;
+  transition: opacity 0.2s ease 0.16s !important;
 }
 
-ytmusic-app-layout tp-yt-app-drawer#guide[opened] ~ #mini-guide,
-ytmusic-app-layout tp-yt-app-drawer#guide[opened] ~ #mini-guide-background,
-ytmusic-app-layout:is([guide-opened], [is-guide-open]) :is(#mini-guide, #mini-guide-background),
-ytmusic-app-layout:has(tp-yt-app-drawer#guide[opened]) :is(#mini-guide, #mini-guide-background) {
-  opacity: 0 !important;
-  transition-delay: 0s !important;
+ytmusic-app-layout:has(tp-yt-app-drawer#guide[opened]) #mini-guide {
+  opacity: 0;
   pointer-events: none;
+  transition-delay: 0.08s !important;
+}
+
+ytmusic-app-layout #mini-guide-background {
+  transition: opacity 0.2s ease 0.16s !important;
 }
 
 /* drawer scrim fades smoothly */
@@ -2490,11 +2484,10 @@ ytmusic-app-layout tp-yt-app-drawer#guide #scrim {
   transition: opacity var(--spicy-guide-time) var(--spicy-guide-ease) !important;
 }
 
-/* entries fade out quickly while the drawer closes */
-ytmusic-guide-renderer :is(ytmusic-guide-entry-renderer, ytmusic-guide-section-renderer) {
-  transition:
-    opacity 0.16s ease,
-    background-color 0.18s ease;
+ytmusic-guide-renderer :is(ytmusic-guide-entry-renderer, ytmusic-guide-section-renderer) :is(.title, .guide-entry-text, yt-formatted-string) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
 }
 
 /* glass layer of the expanded drawer fades along with the slide */
