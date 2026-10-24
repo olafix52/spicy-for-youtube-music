@@ -2492,7 +2492,7 @@ ytmusic-guide-renderer :is(ytmusic-guide-entry-renderer, ytmusic-guide-section-r
    ------------------------------------------------------------------------ */
 ytmusic-popup-container tp-yt-iron-dropdown {
   --spicy-pop-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  transform-origin: var(--spicy-pop-origin, top center);
+  transform-origin: var(--spicy-pop-origin, bottom center);
   opacity: 1;
   scale: 1;
   translate: 0 0;
@@ -2508,7 +2508,7 @@ ytmusic-popup-container tp-yt-iron-dropdown {
   ytmusic-popup-container tp-yt-iron-dropdown {
     opacity: 0;
     scale: 0.94;
-    translate: 0 -8px;
+    translate: 0 8px;
   }
 }
 
@@ -2516,7 +2516,7 @@ ytmusic-popup-container tp-yt-iron-dropdown[aria-hidden="true"],
 ytmusic-popup-container tp-yt-iron-dropdown[style*="display: none"] {
   opacity: 0;
   scale: 0.96;
-  translate: 0 -6px;
+  translate: 0 6px;
   pointer-events: none;
 }
 
@@ -2528,7 +2528,7 @@ ytmusic-popup-container :is(ytmusic-menu-popup-renderer, ytd-multi-page-menu-ren
 @keyframes spicy-pop-item {
   from {
     opacity: 0;
-    translate: 0 -4px;
+    translate: 0 4px;
   }
 
   to {
