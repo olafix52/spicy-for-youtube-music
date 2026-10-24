@@ -2429,40 +2429,52 @@ ytmusic-app-layout tp-yt-app-drawer#guide[persistent] #contentContainer {
   will-change: transform;
 }
 
-/* page content follows the drawer width instead of jumping */
+/* page content follows the drawer width instead of jumping (only the
+   side offset animates, so nothing is squeezed or reflowed mid-slide) */
 ytmusic-app-layout #content.ytmusic-app-layout,
-ytmusic-app-layout #main-panel.ytmusic-app-layout,
-ytmusic-app-layout ytmusic-nav-bar,
-ytmusic-app-layout #nav-bar-background,
-ytmusic-app-layout #nav-bar-divider,
-ytmusic-app-layout #player-page,
-ytmusic-app-layout ytmusic-player-bar {
+ytmusic-app-layout #main-panel.ytmusic-app-layout {
   transition:
     margin-left var(--spicy-guide-time) var(--spicy-guide-ease),
-    padding-left var(--spicy-guide-time) var(--spicy-guide-ease),
-    left var(--spicy-guide-time) var(--spicy-guide-ease),
-    width var(--spicy-guide-time) var(--spicy-guide-ease),
-    opacity 0.24s ease;
+    padding-left var(--spicy-guide-time) var(--spicy-guide-ease);
 }
 
-/* collapsed mini bar cross-fades with the full drawer */
+/* drawer content never wraps or spills while the panel narrows and
+   is clipped to the drawer, so entries cannot pile up on each other */
+ytmusic-app-layout tp-yt-app-drawer#guide #contentContainer,
+ytmusic-app-layout #guide-wrapper {
+  overflow: hidden;
+}
+
+ytmusic-guide-renderer :is(ytmusic-guide-entry-renderer, ytmusic-guide-section-renderer) :is(.title, .guide-entry-text, yt-formatted-string) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+/* the mini bar waits until the drawer has left, then fades in; on the
+   way back it vanishes at once, so the two never overlap */
 ytmusic-app-layout #mini-guide,
 ytmusic-app-layout #mini-guide-background {
-  transition:
-    opacity 0.24s ease,
-    transform var(--spicy-guide-time) var(--spicy-guide-ease),
-    width var(--spicy-guide-time) var(--spicy-guide-ease) !important;
+  transition: opacity 0.2s ease 0.18s !important;
 }
 
-/* drawer scrim and entries fade smoothly */
+ytmusic-app-layout tp-yt-app-drawer#guide[opened] ~ #mini-guide,
+ytmusic-app-layout tp-yt-app-drawer#guide[opened] ~ #mini-guide-background,
+ytmusic-app-layout:has(tp-yt-app-drawer#guide[opened]) :is(#mini-guide, #mini-guide-background) {
+  opacity: 0 !important;
+  transition-delay: 0s !important;
+  pointer-events: none;
+}
+
+/* drawer scrim fades smoothly */
 ytmusic-app-layout tp-yt-app-drawer#guide #scrim {
   transition: opacity var(--spicy-guide-time) var(--spicy-guide-ease) !important;
 }
 
-ytmusic-guide-renderer :is(ytmusic-guide-entry-renderer, ytmusic-guide-section-renderer, ytmusic-guide-signin-promo-renderer) {
+/* entries fade out quickly while the drawer closes */
+ytmusic-guide-renderer :is(ytmusic-guide-entry-renderer, ytmusic-guide-section-renderer) {
   transition:
-    opacity 0.26s ease,
-    transform var(--spicy-guide-time) var(--spicy-guide-ease),
+    opacity 0.16s ease,
     background-color 0.18s ease;
 }
 
