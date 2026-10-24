@@ -2024,6 +2024,189 @@ ytmusic-player-bar :is(.left-controls-buttons, .right-controls-buttons, .middle-
 }
 
 /* ---------------------------------------------------------------------------
+   8b. Autoscroll Pill & Controls Dock (Spicy Lyrics Liquid Glass)
+       Uses Spicy's Liquid Glass material tokens (tokens.css): translucent
+       frosted blur(16px) saturate(1.7) brightness(1.06), dual top/bottom
+       specular bevel (--liquid-edge), tinted ambient shadow (--liquid-cast-soft),
+       pill geometry and 0.97 press scale.
+   ------------------------------------------------------------------------ */
+.autoscroll-resume-button {
+  font-family: "SF Pro Text", var(--spicy-font) !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em;
+  line-height: 1.2 !important;
+  color: hsla(0, 0%, 100%, 0.92) !important;
+  padding: 0.65rem 1.35rem !important;
+  border: none !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(1.7) brightness(1.06) !important;
+  backdrop-filter: blur(16px) saturate(1.7) brightness(1.06) !important;
+  box-shadow:
+    0 10px 24px -6px rgba(8, 10, 18, 0.42),
+    0 2px 6px -1px rgba(8, 10, 18, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.2) !important;
+  text-shadow: none !important;
+  transition:
+    opacity 0.15s linear 50ms,
+    transform 0.25s cubic-bezier(0.23, 1, 0.32, 1),
+    background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+    scale 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.autoscroll-resume-button:hover {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+  text-shadow: none !important;
+  box-shadow:
+    0 10px 24px -6px rgba(8, 10, 18, 0.42),
+    0 2px 6px -1px rgba(8, 10, 18, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+.autoscroll-resume-button:active {
+  scale: 0.97;
+}
+
+/* Controls dock: Liquid Glass capsule with neutral iOS-mono accent
+   and smooth intrinsic width expansion (interpolate-size: allow-keywords) */
+.blyrics-dock,
+.blyrics-dock__menu {
+  --dock-accent: #ffffff;
+  font-family: "SF Pro Text", var(--spicy-font) !important;
+  interpolate-size: allow-keywords;
+}
+
+.blyrics-dock__inner {
+  border-radius: 999px !important;
+  padding: 6px 10px !important;
+  background: rgba(0, 0, 0, 0.14) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(1.7) brightness(1.06) !important;
+  backdrop-filter: blur(16px) saturate(1.7) brightness(1.06) !important;
+  box-shadow:
+    0 10px 24px -6px rgba(8, 10, 18, 0.42),
+    0 2px 6px -1px rgba(8, 10, 18, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.2) !important;
+  transition:
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    -webkit-filter 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.22s ease,
+    box-shadow 0.22s ease !important;
+}
+
+.blyrics-dock__inner:hover {
+  background: rgba(0, 0, 0, 0.2) !important;
+  box-shadow:
+    0 10px 24px -6px rgba(8, 10, 18, 0.42),
+    0 2px 6px -1px rgba(8, 10, 18, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.26) !important;
+}
+
+/* Smoothly interpolate source label to its exact text width (max-content)
+   instead of 220px, eliminating the collapse lag and snap */
+.blyrics-dock__source-label {
+  margin: 0 !important;
+  transition:
+    max-width 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    margin 0.34s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.blyrics-dock__inner:hover .blyrics-dock__source-label,
+.blyrics-dock__inner--expanded .blyrics-dock__source-label,
+.blyrics-dock__inner:focus-within .blyrics-dock__source-label {
+  max-width: max-content !important;
+  margin: 0 4px !important;
+}
+
+/* Remove static flex gap around collapsed offset step buttons and animate
+   their margin alongside max-width so all dock items expand in unison */
+.blyrics-dock__offset {
+  gap: 0 !important;
+}
+
+.blyrics-dock__offset-value {
+  margin-inline: 4px;
+}
+
+.blyrics-dock__offset-step {
+  margin: 0 !important;
+}
+
+.blyrics-dock__inner:hover .blyrics-dock__offset-step,
+.blyrics-dock__inner--expanded .blyrics-dock__offset-step,
+.blyrics-dock__inner:focus-within .blyrics-dock__offset-step {
+  margin: 0 2px !important;
+}
+
+.blyrics-dock__control,
+.blyrics-dock__cycle,
+.blyrics-dock__offset-step,
+.blyrics-dock__offset-row-step,
+.blyrics-dock__inner .blyrics-footer__vote {
+  border-radius: 999px !important;
+  transition:
+    background-color 0.16s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.16s cubic-bezier(0.4, 0, 0.2, 1),
+    max-width 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    margin 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    scale 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+:is(.blyrics-dock__control, .blyrics-dock__cycle, .blyrics-dock__offset-step, .blyrics-dock__offset-row-step, .blyrics-dock__inner .blyrics-footer__vote):active {
+  scale: 0.94;
+}
+
+.blyrics-dock__control--active {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+}
+
+.blyrics-dock__control--active:hover {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.22) !important;
+}
+
+/* Dock popover menu (source selector & offset panel) */
+.blyrics-dock__menu {
+  border-radius: 16px !important;
+  padding: 6px !important;
+  background: rgba(20, 20, 24, 0.72) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(1.7) brightness(1.06) !important;
+  backdrop-filter: blur(24px) saturate(1.7) brightness(1.06) !important;
+  box-shadow:
+    0 16px 40px -8px rgba(8, 10, 18, 0.55),
+    0 4px 12px -2px rgba(8, 10, 18, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+.blyrics-dock__menu-item {
+  font-family: "SF Pro Text", var(--spicy-font) !important;
+  border-radius: 10px !important;
+}
+
+.blyrics-dock__menu-item--active {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+}
+
+/* ---------------------------------------------------------------------------
    9. Reduced motion
    ------------------------------------------------------------------------ */
 @media (prefers-reduced-motion: reduce) {
