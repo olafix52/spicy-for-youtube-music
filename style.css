@@ -1543,15 +1543,15 @@ ytmusic-player-bar :is(.left-controls-buttons, .right-controls-buttons, .middle-
 }
 
 /* like and dislike: grow with a springy bounce on hover and squeeze on press */
-ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-shape-dislike, yt-icon-button) {
+ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-shape-dislike, yt-icon-button:not(:is(#button-shape-like, #button-shape-dislike) *)) {
   transition: scale 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-shape-dislike, yt-icon-button):hover {
+ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-shape-dislike, yt-icon-button:not(:is(#button-shape-like, #button-shape-dislike) *)):hover {
   scale: 1.28;
 }
 
-ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-shape-dislike, yt-icon-button):active {
+ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-shape-dislike, yt-icon-button:not(:is(#button-shape-like, #button-shape-dislike) *)):active {
   scale: 0.92;
   transition-duration: 0.12s;
 }
@@ -2568,7 +2568,7 @@ html ytmusic-popup-container ytd-multi-page-menu-renderer ytd-compact-link-rende
 
 /* menu items cascade in a touch after the panel, like Spicy's lists */
 ytmusic-popup-container :is(ytmusic-menu-popup-renderer, ytd-multi-page-menu-renderer) :is(ytmusic-menu-navigation-item-renderer, ytmusic-menu-service-item-renderer, ytmusic-toggle-menu-service-item-renderer, ytd-compact-link-renderer) {
-  animation: spicy-pop-item 0.34s var(--spicy-pop-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  animation: spicy-pop-item 0.34s var(--spicy-pop-ease, cubic-bezier(0.22, 1, 0.36, 1)) backwards;
 }
 
 @keyframes spicy-pop-item {
