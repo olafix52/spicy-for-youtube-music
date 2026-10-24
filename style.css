@@ -1248,11 +1248,11 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
 }
 
 :is(.blyrics-fs-like, .blyrics-fs-dislike):hover .blyrics-fs-rate-icon {
-  scale: 0.925;
+  scale: 1.245;
 }
 
 :is(.blyrics-fs-like, .blyrics-fs-dislike):active .blyrics-fs-rate-icon {
-  scale: 1.245;
+  scale: 0.925;
 }
 
 /* progress bar: thicker rounded track, knob only on hover or drag */
