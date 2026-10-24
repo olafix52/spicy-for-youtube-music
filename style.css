@@ -2484,9 +2484,92 @@ ytmusic-guide-renderer :is(ytmusic-guide-entry-renderer, ytmusic-guide-section-r
 }
 
 /* ---------------------------------------------------------------------------
+   8e. Popups and dropdowns (context menu, account menu, search suggestions)
+       YouTube Music shows and hides these by flipping display, so they pop
+       in and vanish in a single frame. Discrete display transitions plus a
+       starting style give them a soft scale and fade in, and the same on
+       the way out, in line with the rest of the theme.
+   ------------------------------------------------------------------------ */
+ytmusic-popup-container tp-yt-iron-dropdown {
+  --spicy-pop-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: var(--spicy-pop-origin, top center);
+  opacity: 1;
+  scale: 1;
+  translate: 0 0;
+  transition:
+    opacity 0.2s var(--spicy-pop-ease),
+    scale 0.28s var(--spicy-pop-ease),
+    translate 0.28s var(--spicy-pop-ease),
+    display 0.28s allow-discrete,
+    overlay 0.28s allow-discrete;
+}
+
+@starting-style {
+  ytmusic-popup-container tp-yt-iron-dropdown {
+    opacity: 0;
+    scale: 0.94;
+    translate: 0 -8px;
+  }
+}
+
+ytmusic-popup-container tp-yt-iron-dropdown[aria-hidden="true"],
+ytmusic-popup-container tp-yt-iron-dropdown[style*="display: none"] {
+  opacity: 0;
+  scale: 0.96;
+  translate: 0 -6px;
+  pointer-events: none;
+}
+
+/* menu items cascade in a touch after the panel, like Spicy's lists */
+ytmusic-popup-container :is(ytmusic-menu-popup-renderer, ytd-multi-page-menu-renderer) :is(ytmusic-menu-navigation-item-renderer, ytmusic-menu-service-item-renderer, ytmusic-toggle-menu-service-item-renderer, ytd-compact-link-renderer) {
+  animation: spicy-pop-item 0.34s var(--spicy-pop-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+@keyframes spicy-pop-item {
+  from {
+    opacity: 0;
+    translate: 0 -4px;
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* search suggestions drop down from the search box */
+ytmusic-search-box :is(ytmusic-search-suggestions-section, #suggestion-list, .suggestions-container) {
+  transform-origin: top center;
+  animation: spicy-search-drop 0.26s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes spicy-search-drop {
+  from {
+    opacity: 0;
+    scale: 0.97;
+    translate: 0 -8px;
+  }
+
+  to {
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------
    9. Reduced motion
    ------------------------------------------------------------------------ */
 @media (prefers-reduced-motion: reduce) {
+  ytmusic-popup-container tp-yt-iron-dropdown {
+    transition: none;
+  }
+
+  ytmusic-popup-container :is(ytmusic-menu-popup-renderer, ytd-multi-page-menu-renderer) *,
+  ytmusic-search-box :is(ytmusic-search-suggestions-section, #suggestion-list, .suggestions-container) {
+    animation: none !important;
+  }
+
   ytmusic-player-page:before,
   ytmusic-player-page:after,
   .blyrics--instrumental.blyrics--animating .blyrics--instrumental-icon {
