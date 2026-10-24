@@ -2373,9 +2373,24 @@ ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header.iron-s
   background: transparent !important;
 }
 
+/* an unavailable tab (comments off, no lyrics) is dropped from the capsule
+   instead of showing a dead faded icon, and the sliding pill offsets below
+   account for the missing slot */
 ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header[disabled] {
-  opacity: 0.28 !important;
-  pointer-events: none !important;
+  display: none !important;
+}
+
+ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header:nth-of-type(3)[disabled]):has(> tp-yt-paper-tab.tab-header:nth-of-type(4).iron-selected)::before,
+ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header:nth-of-type(2)[disabled]):has(> tp-yt-paper-tab.tab-header:nth-of-type(3).iron-selected)::before {
+  transform: translate3d(calc(1 * (var(--spicy-tab-width) + var(--spicy-tab-gap))), 0, 0);
+}
+
+ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header:nth-of-type(2)[disabled]):has(> tp-yt-paper-tab.tab-header:nth-of-type(4).iron-selected)::before {
+  transform: translate3d(calc(2 * (var(--spicy-tab-width) + var(--spicy-tab-gap))), 0, 0);
+}
+
+ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header:nth-of-type(2)[disabled]):has(> tp-yt-paper-tab.tab-header:nth-of-type(3)[disabled]):has(> tp-yt-paper-tab.tab-header:nth-of-type(4).iron-selected)::before {
+  transform: translate3d(calc(1 * (var(--spicy-tab-width) + var(--spicy-tab-gap))), 0, 0);
 }
 
 ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header::before {
