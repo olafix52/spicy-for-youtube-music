@@ -2234,7 +2234,10 @@ ytmusic-player-page #side-panel tp-yt-paper-tabs.tab-header-container {
   max-width: 100% !important;
   height: 44px !important;
   margin: 0 auto 10px !important;
-  padding: 4px 6px !important;
+  /* measured on the live page: the queue glyph sits 22.5px from the left edge
+     and the sparkles glyph 20.8px from the right edge, so the side padding is
+     shifted by 0.85px to make both gaps equal */
+  padding: 4px 6.85px 4px 5.15px !important;
   border-bottom: none !important;
   border-radius: 999px !important;
   background: rgba(0, 0, 0, 0.14) !important;
