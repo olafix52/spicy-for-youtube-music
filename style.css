@@ -2532,21 +2532,21 @@ ytmusic-popup-container tp-yt-iron-dropdown[aria-hidden="true"] {
 }
 
 /* account menu: opens from the top, unlike the context menus that rise */
-ytmusic-popup-container tp-yt-iron-dropdown:has(ytd-multi-page-menu-renderer) {
+ytmusic-popup-container tp-yt-iron-dropdown:has(ytmusic-multi-page-menu-renderer) {
   transform-origin: var(--spicy-pop-origin, top right);
 }
 
-ytmusic-popup-container tp-yt-iron-dropdown:has(ytd-multi-page-menu-renderer)[aria-hidden="true"] {
+ytmusic-popup-container tp-yt-iron-dropdown:has(ytmusic-multi-page-menu-renderer)[aria-hidden="true"] {
   translate: 0 -6px;
 }
 
 @starting-style {
-  ytmusic-popup-container tp-yt-iron-dropdown:has(ytd-multi-page-menu-renderer) {
+  ytmusic-popup-container tp-yt-iron-dropdown:has(ytmusic-multi-page-menu-renderer) {
     translate: 0 -8px;
   }
 }
 
-html ytmusic-popup-container ytd-multi-page-menu-renderer ytd-compact-link-renderer {
+html ytmusic-popup-container ytmusic-multi-page-menu-renderer ytd-compact-link-renderer {
   animation-name: spicy-pop-item-down;
 }
 
@@ -2563,7 +2563,7 @@ html ytmusic-popup-container ytd-multi-page-menu-renderer ytd-compact-link-rende
 }
 
 /* menu items cascade in a touch after the panel, like Spicy's lists */
-ytmusic-popup-container :is(ytmusic-menu-popup-renderer, ytd-multi-page-menu-renderer) :is(ytmusic-menu-navigation-item-renderer, ytmusic-menu-service-item-renderer, ytmusic-toggle-menu-service-item-renderer, ytd-compact-link-renderer) {
+ytmusic-popup-container :is(ytmusic-menu-popup-renderer, ytmusic-multi-page-menu-renderer) :is(ytmusic-menu-navigation-item-renderer, ytmusic-menu-service-item-renderer, ytmusic-toggle-menu-service-item-renderer, ytd-compact-link-renderer) {
   animation: spicy-pop-item 0.34s var(--spicy-pop-ease, cubic-bezier(0.22, 1, 0.36, 1)) backwards;
 }
 
@@ -2580,7 +2580,7 @@ ytmusic-popup-container :is(ytmusic-menu-popup-renderer, ytd-multi-page-menu-ren
 }
 
 /* search suggestions drop down from the search box */
-ytmusic-search-box :is(ytmusic-search-suggestions-section, #suggestion-list, .suggestions-container) {
+ytmusic-search-box #suggestion-list {
   transform-origin: top center;
   animation: spicy-search-drop 0.26s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -2619,8 +2619,8 @@ ytmusic-search-box :is(ytmusic-search-suggestions-section, #suggestion-list, .su
     transition: none;
   }
 
-  ytmusic-popup-container :is(ytmusic-menu-popup-renderer, ytd-multi-page-menu-renderer) *,
-  ytmusic-search-box :is(ytmusic-search-suggestions-section, #suggestion-list, .suggestions-container) {
+  ytmusic-popup-container :is(ytmusic-menu-popup-renderer, ytmusic-multi-page-menu-renderer) *,
+  ytmusic-search-box #suggestion-list {
     animation: none !important;
   }
 
