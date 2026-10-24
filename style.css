@@ -1542,6 +1542,20 @@ ytmusic-player-bar :is(.left-controls-buttons, .right-controls-buttons, .middle-
   transform: scale(1.08);
 }
 
+/* like and dislike: grow with a springy bounce on hover and squeeze on press */
+ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-shape-dislike, yt-icon-button) {
+  transition: scale 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-shape-dislike, yt-icon-button):hover {
+  scale: 1.28;
+}
+
+ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-shape-dislike, yt-icon-button):active {
+  scale: 0.92;
+  transition-duration: 0.12s;
+}
+
 /* ---------------------------------------------------------------------------
    7e. Picture-in-Picture / Spicy Popup Lyrics
    ------------------------------------------------------------------------ */
