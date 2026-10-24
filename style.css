@@ -2147,12 +2147,7 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 
 /* Remove static flex gap around collapsed offset step buttons and animate
    their margin alongside max-width so all dock items expand in unison */
-.blyrics-dock__source {
-  anchor-name: --blyrics-dock-source;
-}
-
 .blyrics-dock__offset {
-  anchor-name: --blyrics-dock-offset;
   gap: 0 !important;
 }
 
@@ -2219,46 +2214,11 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
     inset 0 -1px 0 rgba(255, 255, 255, 0.2) !important;
 }
 
-/* Fallback alignment for source selector menu */
+/* Symmetrical alignment covering cycle controls (< >) */
 .blyrics-dock__menu:not(.blyrics-dock__menu--offset) {
-  margin-left: -28px !important;
-  width: 157px !important;
-  min-width: 157px !important;
-}
-
-/* Anchor positioning: subpixel alignment locking the flyout to the source capsule */
-@supports (position-anchor: --blyrics-dock-source) {
-  .blyrics-dock__menu:not(.blyrics-dock__menu--offset) {
-    position-anchor: --blyrics-dock-source;
-    box-sizing: border-box !important;
-    left: anchor(left) !important;
-    right: auto !important;
-    width: anchor-size(width) !important;
-    min-width: 156px !important;
-    bottom: calc(anchor(top) + 18px) !important;
-    transform: none !important;
-    margin: 0 !important;
-  }
-
-  body:has(.blyrics-dock[data-position*="top"]) .blyrics-dock__menu:not(.blyrics-dock__menu--offset) {
-    top: calc(anchor(bottom) + 18px) !important;
-    bottom: auto !important;
-  }
-
-  .blyrics-dock__menu--offset {
-    position-anchor: --blyrics-dock-offset;
-    box-sizing: border-box !important;
-    bottom: calc(anchor(top) + 18px) !important;
-    left: anchor(center) !important;
-    right: auto !important;
-    transform: translateX(-50%) !important;
-    margin: 0 !important;
-  }
-
-  body:has(.blyrics-dock[data-position*="top"]) .blyrics-dock__menu--offset {
-    top: calc(anchor(bottom) + 18px) !important;
-    bottom: auto !important;
-  }
+  margin-left: -35px !important;
+  min-width: 156px !important;
+  width: max-content !important;
 }
 
 .blyrics-dock__menu-item {
