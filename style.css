@@ -2410,6 +2410,68 @@ ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header:last-o
 }
 
 /* ---------------------------------------------------------------------------
+   8d. Sidebar expand / collapse (smooth slide, fade and content shift)
+       The left navigation drawer, the collapsed mini bar and the page content
+       margin all animate with one shared spring-like curve, so hiding or
+       revealing the sidebar glides instead of snapping.
+   ------------------------------------------------------------------------ */
+ytmusic-app-layout {
+  --spicy-guide-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --spicy-guide-time: 0.38s;
+}
+
+/* drawer panel slides in and out */
+ytmusic-app-layout tp-yt-app-drawer#guide #contentContainer,
+ytmusic-app-layout tp-yt-app-drawer#guide[persistent] #contentContainer {
+  transition:
+    transform var(--spicy-guide-time) var(--spicy-guide-ease),
+    visibility var(--spicy-guide-time) linear !important;
+  will-change: transform;
+}
+
+/* page content follows the drawer width instead of jumping */
+ytmusic-app-layout #content.ytmusic-app-layout,
+ytmusic-app-layout #main-panel.ytmusic-app-layout,
+ytmusic-app-layout ytmusic-nav-bar,
+ytmusic-app-layout #nav-bar-background,
+ytmusic-app-layout #nav-bar-divider,
+ytmusic-app-layout #player-page,
+ytmusic-app-layout ytmusic-player-bar {
+  transition:
+    margin-left var(--spicy-guide-time) var(--spicy-guide-ease),
+    padding-left var(--spicy-guide-time) var(--spicy-guide-ease),
+    left var(--spicy-guide-time) var(--spicy-guide-ease),
+    width var(--spicy-guide-time) var(--spicy-guide-ease),
+    opacity 0.24s ease;
+}
+
+/* collapsed mini bar cross-fades with the full drawer */
+ytmusic-app-layout #mini-guide,
+ytmusic-app-layout #mini-guide-background {
+  transition:
+    opacity 0.24s ease,
+    transform var(--spicy-guide-time) var(--spicy-guide-ease),
+    width var(--spicy-guide-time) var(--spicy-guide-ease) !important;
+}
+
+/* drawer scrim and entries fade smoothly */
+ytmusic-app-layout tp-yt-app-drawer#guide #scrim {
+  transition: opacity var(--spicy-guide-time) var(--spicy-guide-ease) !important;
+}
+
+ytmusic-guide-renderer :is(ytmusic-guide-entry-renderer, ytmusic-guide-section-renderer, ytmusic-guide-signin-promo-renderer) {
+  transition:
+    opacity 0.26s ease,
+    transform var(--spicy-guide-time) var(--spicy-guide-ease),
+    background-color 0.18s ease;
+}
+
+/* glass layer of the expanded drawer fades along with the slide */
+#layout:not([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"]) #guide-wrapper::before {
+  transition: opacity var(--spicy-guide-time) var(--spicy-guide-ease);
+}
+
+/* ---------------------------------------------------------------------------
    9. Reduced motion
    ------------------------------------------------------------------------ */
 @media (prefers-reduced-motion: reduce) {
