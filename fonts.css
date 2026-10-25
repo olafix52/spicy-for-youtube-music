@@ -85,3 +85,52 @@
   src: local("SF Pro Text Bold"), local("SFProText-Bold"),
        url("https://cdn.jsdelivr.net/npm/sf-pro@1.0.4/font/woff2/sf-pro-display_bold.woff2") format("woff2");
 }
+
+/* ---------------------------------------------------------------------------
+   Apple San Francisco International Scripts (Variable Fonts, 100-900)
+   ------------------------------------------------------------------------ */
+
+/* SF Arabic */
+@font-face {
+  font-family: "SF Arabic";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: local("SF Arabic"), local("SFArabic-Regular"), local("SFArabic"),
+       url("./fonts/SF-Arabic.woff2") format("woff2"),
+       url("https://cdn.jsdelivr.net/gh/olafix52/spicy-for-youtube-music@main/fonts/SF-Arabic.woff2") format("woff2");
+}
+
+/* SF Hebrew */
+@font-face {
+  font-family: "SF Hebrew";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: local("SF Hebrew"), local("SFHebrew-Regular"), local("SFHebrew"),
+       url("./fonts/SF-Hebrew.woff2") format("woff2"),
+       url("https://cdn.jsdelivr.net/gh/olafix52/spicy-for-youtube-music@main/fonts/SF-Hebrew.woff2") format("woff2");
+}
+
+/* SF Armenian */
+@font-face {
+  font-family: "SF Armenian";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: local("SF Armenian"), local("SFArmenian-Regular"), local("SFArmenian"),
+       url("./fonts/SF-Armenian.woff2") format("woff2"),
+       url("https://cdn.jsdelivr.net/gh/olafix52/spicy-for-youtube-music@main/fonts/SF-Armenian.woff2") format("woff2");
+}
+
+/* SF Georgian */
+@font-face {
+  font-family: "SF Georgian";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: local("SF Georgian"), local("SFGeorgian-Regular"), local("SFGeorgian"),
+       url("./fonts/SF-Georgian.woff2") format("woff2"),
+       url("https://cdn.jsdelivr.net/gh/olafix52/spicy-for-youtube-music@main/fonts/SF-Georgian.woff2") format("woff2");
+}
+
