@@ -49,15 +49,6 @@
        url("https://cdn.jsdelivr.net/npm/@qpokychuk/sf-pro-display@1.0.2/src/SFProDisplay-Heavy.woff2") format("woff2");
 }
 
-@font-face {
-  font-family: "SF Pro Display";
-  font-style: normal;
-  font-weight: 900;
-  font-display: swap;
-  src: local("SF Pro Display Black"), local("SFProDisplay-Black"),
-       url("https://cdn.jsdelivr.net/npm/@qpokychuk/sf-pro-display@1.0.2/src/SFProDisplay-Black.woff2") format("woff2");
-}
-
 /* SF Pro Text */
 @font-face {
   font-family: "SF Pro Text";
@@ -75,15 +66,6 @@
   font-display: swap;
   src: local("SF Pro Text Semibold"), local("SFProText-Semibold"),
        url("https://cdn.jsdelivr.net/npm/sf-pro@1.0.4/font/woff2/sf-pro-text_semibold.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "SF Pro Text";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: local("SF Pro Text Bold"), local("SFProText-Bold"),
-       url("https://cdn.jsdelivr.net/npm/sf-pro@1.0.4/font/woff2/sf-pro-display_bold.woff2") format("woff2");
 }
 
 /* ---------------------------------------------------------------------------
