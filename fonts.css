@@ -62,6 +62,15 @@
 @font-face {
   font-family: "SF Pro Text";
   font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: local("SF Pro Text Medium"), local("SFProText-Medium"),
+       url("https://cdn.jsdelivr.net/npm/@qpokychuk/sf-pro-display@1.0.2/src/SFProDisplay-Medium.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "SF Pro Text";
+  font-style: normal;
   font-weight: 600;
   font-display: swap;
   src: local("SF Pro Text Semibold"), local("SFProText-Semibold"),
@@ -79,8 +88,8 @@
   font-weight: 100 900;
   font-display: swap;
   src: local("SF Arabic"), local("SFArabic-Regular"), local("SFArabic"),
-       url("./fonts/SF-Arabic.woff2") format("woff2"),
        url("https://cdn.jsdelivr.net/gh/olafix52/spicy-for-youtube-music@main/fonts/SF-Arabic.woff2") format("woff2");
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
 }
 
 /* SF Hebrew */
@@ -90,8 +99,8 @@
   font-weight: 100 900;
   font-display: swap;
   src: local("SF Hebrew"), local("SFHebrew-Regular"), local("SFHebrew"),
-       url("./fonts/SF-Hebrew.woff2") format("woff2"),
        url("https://cdn.jsdelivr.net/gh/olafix52/spicy-for-youtube-music@main/fonts/SF-Hebrew.woff2") format("woff2");
+  unicode-range: U+0590-05FF, U+FB1D-FB4F;
 }
 
 /* SF Armenian */
@@ -101,8 +110,8 @@
   font-weight: 100 900;
   font-display: swap;
   src: local("SF Armenian"), local("SFArmenian-Regular"), local("SFArmenian"),
-       url("./fonts/SF-Armenian.woff2") format("woff2"),
        url("https://cdn.jsdelivr.net/gh/olafix52/spicy-for-youtube-music@main/fonts/SF-Armenian.woff2") format("woff2");
+  unicode-range: U+0530-058F, U+FB13-FB17;
 }
 
 /* SF Georgian */
@@ -112,7 +121,7 @@
   font-weight: 100 900;
   font-display: swap;
   src: local("SF Georgian"), local("SFGeorgian-Regular"), local("SFGeorgian"),
-       url("./fonts/SF-Georgian.woff2") format("woff2"),
        url("https://cdn.jsdelivr.net/gh/olafix52/spicy-for-youtube-music@main/fonts/SF-Georgian.woff2") format("woff2");
+  unicode-range: U+10A0-10FF, U+1C90-1CBF, U+2D00-2D2F;
 }
 
