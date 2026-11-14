@@ -1680,6 +1680,18 @@ ytmusic-browse-response #contents {
   display: none;
 }
 
+/* fullscreen: YouTube Music keeps its top bar background and divider (a
+   tinted strip across the top of the screen). Better Lyrics hides them only
+   on the player page, so hide them in fullscreen as well. */
+#layout:is([player-ui-state="FULLSCREEN"], [player-fullscreened]) :is(#nav-bar-background, #nav-bar-divider, #mini-guide-background),
+ytmusic-app-layout:is([player-fullscreened], [player-ui-state="FULLSCREEN"]) :is(#nav-bar-background, #nav-bar-divider, #mini-guide-background) {
+  opacity: 0 !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 /* after scrolling, keep the collapsed side bar clear and drop the line
    under the top bar (YouTube Music fades both in on scroll) */
 ytmusic-app-layout.content-scrolled :is(#mini-guide-background, #nav-bar-divider).ytmusic-app-layout {
