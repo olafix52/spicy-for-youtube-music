@@ -1384,7 +1384,7 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
     --spicy-dock-reserve: calc(var(--spicy-fs-art-size) * 0.1 + clamp(38px, calc(var(--spicy-fs-art-size) * 0.085), 62px) + var(--spicy-dock-gap));
     position: fixed !important;
     left: clamp(28px, 3.2vw, 56px) !important;
-    bottom: clamp(24px, 3.5vh, 48px) !important;
+    bottom: calc(clamp(24px, 3.5vh, 48px) + var(--ytmusic-nav-bar-height, 64px)) !important;
     width: var(--spicy-fs-art-size) !important;
     margin: 0 !important;
     transform: none !important;
