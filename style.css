@@ -1306,8 +1306,8 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
   ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #player.ytmusic-player-page {
     --spicy-stage-feather: calc(var(--spicy-fs-art-size) * 0.45);
     position: fixed !important;
-    top: 0 !important;
-    bottom: 0 !important;
+    top: calc(var(--ytmusic-nav-bar-height, 64px) * -1) !important;
+    bottom: auto !important;
     left: 0 !important;
     width: calc(var(--spicy-fs-art-size) + 9vw + var(--spicy-stage-feather)) !important;
     max-width: none !important;
