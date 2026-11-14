@@ -1481,16 +1481,16 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
   }
 
   ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #blyrics-fs-controls .blyrics-progress__bar {
-    height: clamp(5px, calc(var(--spicy-fs-art-size) * 0.015), 9px) !important;
+    height: clamp(8px, calc(var(--spicy-fs-art-size) * 0.024), 24px) !important;
   }
 
   ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #blyrics-fs-controls :is(.blyrics-progress__bar:hover, .blyrics-progress__bar.dragging) {
-    height: clamp(9px, calc(var(--spicy-fs-art-size) * 0.026), 14px) !important;
+    height: clamp(14px, calc(var(--spicy-fs-art-size) * 0.042), 40px) !important;
   }
 
   ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #blyrics-fs-controls .blyrics-progress__times {
     margin-top: 0 !important;
-    font-size: calc(var(--spicy-fs-art-size) * 0.022) !important;
+    font-size: calc(var(--spicy-fs-art-size) * 0.03) !important;
   }
 
   ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #blyrics-fs-controls .blyrics-progress__elapsed {
