@@ -2939,7 +2939,7 @@ ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header:last-o
    8c-queue. Side-Panel Queue (Spicy Liquid Glass & Typography)
       Replaces flat queue dividers and boxy rows with rounded glass cards,
       cover-cropped thumbnails, capsule chips with soft right-edge fade,
-      Liquid Glass Save pill, thin scrollbar, bottom fade and quiet
+      Liquid Glass Save pill, hidden scrollbars, bottom fade and quiet
       already-played tracks.
    ------------------------------------------------------------------------ */
 
@@ -3036,33 +3036,31 @@ ytmusic-player-page #side-panel ytmusic-chip-cloud-chip-renderer a:active {
   transform: scale(0.95);
 }
 
-/* thin scrollbar and soft bottom fade on the scrollable queue tab */
+/* hide vertical and horizontal scrollbars across the queue and chip strip,
+   keeping wheel/trackpad scrolling intact with a soft bottom fade */
 ytmusic-player-page #side-panel #tab-renderer:has(ytmusic-player-queue) {
   -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 calc(100% - 42px), transparent 100%);
   mask-image: linear-gradient(180deg, #000 0%, #000 calc(100% - 42px), transparent 100%);
-  scrollbar-width: thin;
-  scrollbar-color: rgb(255 255 255 / 0.2) transparent;
 }
 
-ytmusic-player-page #side-panel #tab-renderer:has(ytmusic-player-queue)::-webkit-scrollbar,
-ytmusic-player-page #side-panel ytmusic-player-queue::-webkit-scrollbar {
-  width: 5px;
+ytmusic-player-page #side-panel,
+ytmusic-player-page #side-panel :is(#tab-renderer, ytmusic-tab-renderer, ytmusic-player-queue, ytmusic-player-queue #contents, ytmusic-chip-cloud-renderer, ytmusic-chip-cloud-renderer #chips, ytmusic-chip-cloud-renderer #scroller, ytmusic-chip-cloud-renderer iron-selector) {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 
-ytmusic-player-page #side-panel #tab-renderer:has(ytmusic-player-queue)::-webkit-scrollbar-track,
-ytmusic-player-page #side-panel ytmusic-player-queue::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-ytmusic-player-page #side-panel #tab-renderer:has(ytmusic-player-queue)::-webkit-scrollbar-thumb,
-ytmusic-player-page #side-panel ytmusic-player-queue::-webkit-scrollbar-thumb {
-  background: rgb(255 255 255 / 0.18);
-  border-radius: 999px;
-}
-
-ytmusic-player-page #side-panel #tab-renderer:has(ytmusic-player-queue)::-webkit-scrollbar-thumb:hover,
-ytmusic-player-page #side-panel ytmusic-player-queue::-webkit-scrollbar-thumb:hover {
-  background: rgb(255 255 255 / 0.36);
+ytmusic-player-page #side-panel::-webkit-scrollbar,
+ytmusic-player-page #side-panel #tab-renderer::-webkit-scrollbar,
+ytmusic-player-page #side-panel ytmusic-tab-renderer::-webkit-scrollbar,
+ytmusic-player-page #side-panel ytmusic-player-queue::-webkit-scrollbar,
+ytmusic-player-page #side-panel ytmusic-player-queue #contents::-webkit-scrollbar,
+ytmusic-player-page #side-panel ytmusic-chip-cloud-renderer::-webkit-scrollbar,
+ytmusic-player-page #side-panel ytmusic-chip-cloud-renderer #chips::-webkit-scrollbar,
+ytmusic-player-page #side-panel ytmusic-chip-cloud-renderer #scroller::-webkit-scrollbar,
+ytmusic-player-page #side-panel ytmusic-chip-cloud-renderer iron-selector::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 /* queue items: rounded glass cards without harsh dividers */
