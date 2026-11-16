@@ -583,14 +583,17 @@ blyrics-line-scroll-below-duration = 700ms;
    which gives the delay below; change it if the swipe settings change. Once the word is sung all its letters spring back to
    normal together, as in Spicy. The engine's own letter animation stays
    off (wobble off). */
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(1) { --spicy-letter-i: 0; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(2) { --spicy-letter-i: 1; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(3) { --spicy-letter-i: 2; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(4) { --spicy-letter-i: 3; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(5) { --spicy-letter-i: 4; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(6) { --spicy-letter-i: 5; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(7) { --spicy-letter-i: 6; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(8) { --spicy-letter-i: 7; }
+/* match both direct word letters (current base / RTL) and .blyrics-sweep-text
+   letters (highlight sweep layer and upcoming Better Lyrics layout) without
+   touching .blyrics-sweep-glow copies */
+:is(.blyrics--word[data-long-word], .blyrics--word[data-long-word] .blyrics-sweep-text) > .blyrics--letter:nth-child(1) { --spicy-letter-i: 0; }
+:is(.blyrics--word[data-long-word], .blyrics--word[data-long-word] .blyrics-sweep-text) > .blyrics--letter:nth-child(2) { --spicy-letter-i: 1; }
+:is(.blyrics--word[data-long-word], .blyrics--word[data-long-word] .blyrics-sweep-text) > .blyrics--letter:nth-child(3) { --spicy-letter-i: 2; }
+:is(.blyrics--word[data-long-word], .blyrics--word[data-long-word] .blyrics-sweep-text) > .blyrics--letter:nth-child(4) { --spicy-letter-i: 3; }
+:is(.blyrics--word[data-long-word], .blyrics--word[data-long-word] .blyrics-sweep-text) > .blyrics--letter:nth-child(5) { --spicy-letter-i: 4; }
+:is(.blyrics--word[data-long-word], .blyrics--word[data-long-word] .blyrics-sweep-text) > .blyrics--letter:nth-child(6) { --spicy-letter-i: 5; }
+:is(.blyrics--word[data-long-word], .blyrics--word[data-long-word] .blyrics-sweep-text) > .blyrics--letter:nth-child(7) { --spicy-letter-i: 6; }
+:is(.blyrics--word[data-long-word], .blyrics--word[data-long-word] .blyrics-sweep-text) > .blyrics--letter:nth-child(8) { --spicy-letter-i: 7; }
 
 /* only short held syllables wave: Better Lyrics marks any word over the
    threshold, including plain long words like "everybody" (0.8s over 9
@@ -601,12 +604,12 @@ blyrics-line-scroll-below-duration = 700ms;
   /* letters of a held syllable rest small and low until it is sung, in all
      lines like the words above; around the line being sung they also rest
      there once sung, under the sung spring that lifts them to normal */
-  .blyrics-container[data-sync="richsync"] .blyrics--word[data-long-word]:not([data-word-state="past"]) > .blyrics--letter {
+  .blyrics-container[data-sync="richsync"] :is(.blyrics--word[data-long-word]:not([data-word-state="past"]), .blyrics--word[data-long-word]:not([data-word-state="past"]) .blyrics-sweep-text) > .blyrics--letter {
     scale: var(--spicy-letter-rest-scale);
     translate: 0 var(--spicy-letter-rest-y);
   }
 
-  .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) .blyrics--word[data-long-word] > .blyrics--letter {
+  .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) :is(.blyrics--word[data-long-word], .blyrics--word[data-long-word] .blyrics-sweep-text) > .blyrics--letter {
     scale: var(--spicy-letter-rest-scale);
     translate: 0 var(--spicy-letter-rest-y);
   }
@@ -618,7 +621,7 @@ blyrics-line-scroll-below-duration = 700ms;
      skip a frame. The sung
      spring holds normal size until the line moves out of this range, where
      letters are at normal size anyway. */
-  .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) .blyrics--word[data-long-word]:not([data-word-state="upcoming"]) > .blyrics--letter {
+  .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) :is(.blyrics--word[data-long-word]:not([data-word-state="upcoming"]), .blyrics--word[data-long-word]:not([data-word-state="upcoming"]) .blyrics-sweep-text) > .blyrics--letter {
     --spicy-letter-slot: calc(var(--blyrics-duration, 1000ms) / var(--letters, 1));
     --spicy-letter-x: calc((var(--spicy-letter-i, 0) - (var(--letters, 1) - 1) / 2) * var(--spicy-letter-spread));
     animation:
@@ -627,7 +630,7 @@ blyrics-line-scroll-below-duration = 700ms;
   }
 
   /* RTL letters sit right-to-left in DOM order, so reverse the horizontal spread */
-  .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) .blyrics--word.blyrics-rtl[data-long-word]:not([data-word-state="upcoming"]) > .blyrics--letter {
+  .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) :is(.blyrics--word.blyrics-rtl[data-long-word]:not([data-word-state="upcoming"]), .blyrics--word.blyrics-rtl[data-long-word]:not([data-word-state="upcoming"]) .blyrics-sweep-text) > .blyrics--letter {
     --spicy-letter-x: calc(((var(--letters, 1) - 1) / 2 - var(--spicy-letter-i, 0)) * var(--spicy-letter-spread));
   }
 }
