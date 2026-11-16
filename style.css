@@ -475,6 +475,32 @@ blyrics-line-scroll-below-duration = 700ms;
   animation-play-state: paused;
 }
 
+/* Variant B: in bidi-sensitive (RTL) lines .blyrics--word is inline, so
+   transforms cannot apply to it; run the bounce on inline-block .blyrics--letter
+   children instead. :where() keeps specificity below the letter-wave rules. */
+.blyrics-container[data-sync="richsync"] :where(.blyrics-bidi-sensitive) .blyrics--word:where(.blyrics-word--lettered) > .blyrics--letter {
+  backface-visibility: hidden;
+  transition:
+    scale 0.3s ease,
+    translate 0.3s ease;
+}
+
+.blyrics-container[data-sync="richsync"] :where(.blyrics-bidi-sensitive) .blyrics--word:where(.blyrics-word--lettered)[data-word-state="upcoming"] > .blyrics--letter {
+  scale: var(--spicy-word-rest-scale);
+  translate: 0 var(--spicy-word-rest-y);
+}
+
+.blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) :where(.blyrics-bidi-sensitive) .blyrics--word:where(.blyrics-word--lettered):not([data-word-state="upcoming"]) > .blyrics--letter {
+  --spicy-lift-rise: clamp(var(--spicy-word-rise-min), calc(var(--blyrics-duration, 300ms) + var(--spicy-word-rise-extra)), 100s);
+  --spicy-scale-rise: calc(var(--spicy-lift-rise) + var(--spicy-word-scale-lag));
+  will-change: scale, translate;
+  animation:
+    spicy-word-lift-settle 1.64s linear var(--spicy-lift-rise) backwards,
+    spicy-word-lift-rise var(--spicy-lift-rise) cubic-bezier(0.33, 0, 0.58, 1),
+    spicy-word-scale-settle 1.64s linear var(--spicy-scale-rise) backwards,
+    spicy-word-scale-rise var(--spicy-scale-rise) cubic-bezier(0.37, 0, 0.63, 1);
+}
+
 @keyframes spicy-word-lift-rise {
   from {
     translate: 0 var(--spicy-word-rest-y);
