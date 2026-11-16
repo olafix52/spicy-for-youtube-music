@@ -3036,15 +3036,15 @@ ytmusic-player-page #side-panel ytmusic-chip-cloud-chip-renderer a:active {
   transform: scale(0.95);
 }
 
-/* hide vertical and horizontal scrollbars across the queue and chip strip,
+/* hide vertical and horizontal scrollbars across side-panel tabs and chips,
    keeping wheel/trackpad scrolling intact with a soft bottom fade */
-ytmusic-player-page #side-panel #tab-renderer:has(ytmusic-player-queue) {
+ytmusic-player-page #side-panel #tab-renderer:not([page-type="MUSIC_PAGE_TYPE_TRACK_LYRICS"]) {
   -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 calc(100% - 42px), transparent 100%);
   mask-image: linear-gradient(180deg, #000 0%, #000 calc(100% - 42px), transparent 100%);
 }
 
 ytmusic-player-page #side-panel,
-ytmusic-player-page #side-panel :is(#tab-renderer, ytmusic-tab-renderer, ytmusic-player-queue, ytmusic-player-queue #contents, ytmusic-chip-cloud-renderer, ytmusic-chip-cloud-renderer #chips, ytmusic-chip-cloud-renderer #scroller, ytmusic-chip-cloud-renderer iron-selector) {
+ytmusic-player-page #side-panel :is(#tab-renderer, ytmusic-tab-renderer, ytmusic-player-queue, ytmusic-player-queue #contents, ytmusic-section-list-renderer, ytmusic-section-list-renderer #contents, ytmusic-carousel-renderer, ytmusic-carousel-renderer #items, ytmusic-chip-cloud-renderer, ytmusic-chip-cloud-renderer #chips, ytmusic-chip-cloud-renderer #scroller, ytmusic-chip-cloud-renderer iron-selector) {
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
 }
@@ -3054,6 +3054,10 @@ ytmusic-player-page #side-panel #tab-renderer::-webkit-scrollbar,
 ytmusic-player-page #side-panel ytmusic-tab-renderer::-webkit-scrollbar,
 ytmusic-player-page #side-panel ytmusic-player-queue::-webkit-scrollbar,
 ytmusic-player-page #side-panel ytmusic-player-queue #contents::-webkit-scrollbar,
+ytmusic-player-page #side-panel ytmusic-section-list-renderer::-webkit-scrollbar,
+ytmusic-player-page #side-panel ytmusic-section-list-renderer #contents::-webkit-scrollbar,
+ytmusic-player-page #side-panel ytmusic-carousel-renderer::-webkit-scrollbar,
+ytmusic-player-page #side-panel ytmusic-carousel-renderer #items::-webkit-scrollbar,
 ytmusic-player-page #side-panel ytmusic-chip-cloud-renderer::-webkit-scrollbar,
 ytmusic-player-page #side-panel ytmusic-chip-cloud-renderer #chips::-webkit-scrollbar,
 ytmusic-player-page #side-panel ytmusic-chip-cloud-renderer #scroller::-webkit-scrollbar,
@@ -3148,6 +3152,134 @@ ytmusic-player-page #side-panel ytmusic-player-queue-item[selected] .byline {
 ytmusic-player-page #side-panel ytmusic-player-queue-item .duration {
   font-variant-numeric: tabular-nums !important;
   color: rgb(255 255 255 / 0.52) !important;
+}
+
+/* ---------------------------------------------------------------------------
+   8c-related. Side-Panel Related / Discover Tab (Spicy Carousels & Glass)
+      Extends Spicy typography to the side panel, softens right-edge carousel
+      overflow with a fade mask, styles carousel arrows and track rows in
+      Liquid Glass, and gives circular artist portraits ambient depth.
+   ------------------------------------------------------------------------ */
+
+ytmusic-player-page #side-panel :is(ytmusic-section-list-renderer, ytmusic-carousel-shelf-renderer, ytmusic-carousel-shelf-basic-header-renderer, ytmusic-responsive-list-item-renderer, ytmusic-two-row-item-renderer, ytmusic-message-renderer) {
+  font-family: var(--spicy-font);
+}
+
+ytmusic-player-page #side-panel :is(ytmusic-section-list-renderer, ytmusic-carousel-shelf-renderer, ytmusic-carousel-shelf-basic-header-renderer, ytmusic-responsive-list-item-renderer, ytmusic-two-row-item-renderer) :is(yt-formatted-string, a, h2, span, button) {
+  font-family: var(--spicy-font) !important;
+}
+
+/* shelf headers sized for the narrower side panel, plus subtle ring on header avatar */
+ytmusic-player-page #side-panel ytmusic-carousel-shelf-basic-header-renderer .title {
+  font-size: clamp(18px, 1.35vw, 22px) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em;
+  color: #fff !important;
+}
+
+ytmusic-player-page #side-panel ytmusic-carousel-shelf-basic-header-renderer .strapline {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em;
+  opacity: 0.58;
+}
+
+ytmusic-player-page #side-panel ytmusic-carousel-shelf-basic-header-renderer :is(#thumbnail, ytmusic-thumbnail-renderer) {
+  border-radius: 999px !important;
+  overflow: hidden;
+  box-shadow:
+    0 4px 12px rgb(0 0 0 / 0.35),
+    0 0 0 1px rgb(255 255 255 / 0.14);
+}
+
+/* Liquid Glass carousel navigation arrows (< >) */
+ytmusic-player-page #side-panel :is(#previous-items-button, #next-items-button, .previous-items-button, .next-items-button) {
+  border-radius: 999px !important;
+  background: rgb(255 255 255 / 0.09) !important;
+  border: none !important;
+  color: rgb(255 255 255 / 0.85) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
+  backdrop-filter: blur(16px) saturate(1.5);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.2),
+    inset 0 0 0 1px rgb(255 255 255 / 0.12) !important;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease,
+    transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+ytmusic-player-page #side-panel :is(#previous-items-button, #next-items-button, .previous-items-button, .next-items-button):not([disabled]):hover {
+  background: rgb(255 255 255 / 0.18) !important;
+  color: #fff !important;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.28),
+    inset 0 0 0 1px rgb(255 255 255 / 0.2) !important;
+}
+
+ytmusic-player-page #side-panel :is(#previous-items-button, #next-items-button, .previous-items-button, .next-items-button):not([disabled]):active {
+  transform: scale(0.92);
+}
+
+ytmusic-player-page #side-panel :is(#previous-items-button, #next-items-button, .previous-items-button, .next-items-button)[disabled] {
+  opacity: 0.35 !important;
+}
+
+/* soft right-edge fade on carousels so clipped columns and artist circles fade out */
+ytmusic-player-page #side-panel ytmusic-carousel-renderer {
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 44px), transparent 100%);
+  mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 44px), transparent 100%);
+}
+
+/* track list items ("You might also like"): rounded glass rows & crisp covers */
+ytmusic-player-page #side-panel ytmusic-responsive-list-item-renderer {
+  border-bottom: none !important;
+  border-radius: var(--spicy-queue-item-radius) !important;
+  padding-inline: 8px !important;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+ytmusic-player-page #side-panel ytmusic-responsive-list-item-renderer:hover {
+  background: rgb(255 255 255 / 0.08) !important;
+}
+
+ytmusic-player-page #side-panel ytmusic-responsive-list-item-renderer:is([active], [selected], :has(ytmusic-play-button-renderer[state="playing"]), :has(ytmusic-play-button-renderer[state="paused"])) {
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0.07)) !important;
+  box-shadow:
+    0 8px 20px -10px rgb(0 0 0 / 0.45),
+    inset 0 1px 0 rgb(255 255 255 / 0.22),
+    inset 0 0 0 1px rgb(255 255 255 / 0.14) !important;
+}
+
+ytmusic-player-page #side-panel ytmusic-responsive-list-item-renderer .left-items {
+  border-radius: var(--spicy-queue-thumb-radius) !important;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.35);
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+ytmusic-player-page #side-panel ytmusic-responsive-list-item-renderer:hover .left-items {
+  transform: scale(1.04);
+}
+
+ytmusic-player-page #side-panel ytmusic-responsive-list-item-renderer :is(#thumbnail img, yt-img-shadow img) {
+  object-fit: cover !important;
+  border-radius: inherit;
+}
+
+/* circular artist portraits ("Similar artists"): depth shadow + subtle glass ring */
+ytmusic-player-page #side-panel ytmusic-two-row-item-renderer .image-wrapper:has([thumbnail-crop*="CIRCLE"]) {
+  border-radius: 999px !important;
+  overflow: hidden;
+  box-shadow:
+    0 8px 22px rgb(0 0 0 / 0.42),
+    0 0 0 1px rgb(255 255 255 / 0.1);
+}
+
+ytmusic-player-page #side-panel ytmusic-two-row-item-renderer .subtitle {
+  opacity: 0.62;
 }
 
 /* ---------------------------------------------------------------------------
@@ -3342,6 +3474,9 @@ ytmusic-search-box #suggestion-list {
   ytmusic-player-page #side-panel ytmusic-chip-cloud-chip-renderer a,
   ytmusic-player-page #side-panel ytmusic-player-queue-item,
   ytmusic-player-page #side-panel ytmusic-player-queue-item .left-items,
+  ytmusic-player-page #side-panel :is(#previous-items-button, #next-items-button, .previous-items-button, .next-items-button),
+  ytmusic-player-page #side-panel ytmusic-responsive-list-item-renderer,
+  ytmusic-player-page #side-panel ytmusic-responsive-list-item-renderer .left-items,
   ytmusic-player-page #player.ytmusic-player-page #song-media-window .top-row-buttons,
   ytmusic-app-layout tp-yt-app-drawer#guide #contentContainer,
   ytmusic-app-layout tp-yt-app-drawer#guide #scrim,
