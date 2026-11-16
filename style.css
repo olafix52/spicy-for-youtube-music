@@ -116,6 +116,11 @@ blyrics-line-scroll-below-duration = 700ms;
     inset 0 0 0 1px rgb(255 255 255 / 0.12),
     inset 0 1px 0 rgb(255 255 255 / 0.2);
 
+  /* side-panel queue */
+  --spicy-queue-item-radius: 12px;
+  --spicy-queue-thumb-radius: 7px;
+  --spicy-queue-played-opacity: 0.55;
+
   /* picture-in-picture / spicy popup lyrics */
   --spicy-pip-artwork-radius: clamp(10px, 3vw, 16px);
   --spicy-pip-artwork-shadow: 0 10px 28px rgb(0 0 0 / 0.42), 0 2px 6px rgb(0 0 0 / 0.2);
@@ -2931,6 +2936,223 @@ ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header:last-o
 }
 
 /* ---------------------------------------------------------------------------
+   8c-queue. Side-Panel Queue (Spicy Liquid Glass & Typography)
+      Replaces flat queue dividers and boxy rows with rounded glass cards,
+      cover-cropped thumbnails, capsule chips with soft right-edge fade,
+      Liquid Glass Save pill, thin scrollbar, bottom fade and quiet
+      already-played tracks.
+   ------------------------------------------------------------------------ */
+
+ytmusic-player-page #side-panel :is(ytmusic-queue-header-renderer, ytmusic-player-queue) {
+  font-family: var(--spicy-font);
+}
+
+ytmusic-player-page #side-panel :is(ytmusic-queue-header-renderer, ytmusic-player-queue) :is(yt-formatted-string, a, span, button) {
+  font-family: var(--spicy-font) !important;
+}
+
+/* queue header & Save pill button */
+ytmusic-player-page #side-panel ytmusic-queue-header-renderer {
+  border-bottom: none !important;
+}
+
+ytmusic-player-page #side-panel ytmusic-queue-header-renderer .title {
+  opacity: 0.62;
+  font-weight: 500;
+}
+
+ytmusic-player-page #side-panel ytmusic-queue-header-renderer .subtitle {
+  color: #fff !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em;
+}
+
+ytmusic-player-page #side-panel ytmusic-queue-header-renderer #buttons :is(button, a.yt-spec-button-shape-next) {
+  border-radius: 999px !important;
+  border: none !important;
+  background: rgb(255 255 255 / 0.1) !important;
+  color: #fff !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  backdrop-filter: blur(18px) saturate(1.5);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.22),
+    inset 0 0 0 1px rgb(255 255 255 / 0.12) !important;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+ytmusic-player-page #side-panel ytmusic-queue-header-renderer #buttons :is(button, a.yt-spec-button-shape-next):hover {
+  background: rgb(255 255 255 / 0.18) !important;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.3),
+    inset 0 0 0 1px rgb(255 255 255 / 0.18) !important;
+}
+
+ytmusic-player-page #side-panel ytmusic-queue-header-renderer #buttons :is(button, a.yt-spec-button-shape-next):active {
+  transform: scale(0.95);
+}
+
+/* queue filter chips: Liquid Glass pills + soft right-edge fade */
+ytmusic-player-page #side-panel ytmusic-chip-cloud-renderer {
+  border-bottom: none !important;
+}
+
+ytmusic-player-page #side-panel ytmusic-chip-cloud-renderer #chips {
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 34px), transparent 100%);
+  mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 34px), transparent 100%);
+}
+
+ytmusic-player-page #side-panel ytmusic-chip-cloud-chip-renderer a {
+  border-radius: 999px !important;
+  border: none !important;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+ytmusic-player-page #side-panel ytmusic-chip-cloud-chip-renderer:not([is-selected]) a {
+  background: rgb(255 255 255 / 0.09) !important;
+  color: rgb(255 255 255 / 0.8) !important;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.09);
+}
+
+ytmusic-player-page #side-panel ytmusic-chip-cloud-chip-renderer:not([is-selected]) a:hover {
+  background: rgb(255 255 255 / 0.16) !important;
+  color: #fff !important;
+}
+
+ytmusic-player-page #side-panel ytmusic-chip-cloud-chip-renderer[is-selected] a {
+  background: rgb(255 255 255 / 0.88) !important;
+  color: #0a0c12 !important;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.24);
+}
+
+ytmusic-player-page #side-panel ytmusic-chip-cloud-chip-renderer a:active {
+  transform: scale(0.95);
+}
+
+/* thin scrollbar and soft bottom fade on the scrollable queue tab */
+ytmusic-player-page #side-panel #tab-renderer:has(ytmusic-player-queue) {
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 calc(100% - 42px), transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 calc(100% - 42px), transparent 100%);
+  scrollbar-width: thin;
+  scrollbar-color: rgb(255 255 255 / 0.2) transparent;
+}
+
+ytmusic-player-page #side-panel #tab-renderer:has(ytmusic-player-queue)::-webkit-scrollbar,
+ytmusic-player-page #side-panel ytmusic-player-queue::-webkit-scrollbar {
+  width: 5px;
+}
+
+ytmusic-player-page #side-panel #tab-renderer:has(ytmusic-player-queue)::-webkit-scrollbar-track,
+ytmusic-player-page #side-panel ytmusic-player-queue::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+ytmusic-player-page #side-panel #tab-renderer:has(ytmusic-player-queue)::-webkit-scrollbar-thumb,
+ytmusic-player-page #side-panel ytmusic-player-queue::-webkit-scrollbar-thumb {
+  background: rgb(255 255 255 / 0.18);
+  border-radius: 999px;
+}
+
+ytmusic-player-page #side-panel #tab-renderer:has(ytmusic-player-queue)::-webkit-scrollbar-thumb:hover,
+ytmusic-player-page #side-panel ytmusic-player-queue::-webkit-scrollbar-thumb:hover {
+  background: rgb(255 255 255 / 0.36);
+}
+
+/* queue items: rounded glass cards without harsh dividers */
+ytmusic-player-page #side-panel ytmusic-player-queue :is(#contents, #automix-contents, .autoplay) {
+  border-top: none !important;
+  border-bottom: none !important;
+}
+
+ytmusic-player-page #side-panel ytmusic-player-queue-item {
+  --ytmusic-player-queue-item-background: transparent;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-radius: var(--spicy-queue-item-radius) !important;
+  margin-block: 2px;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.22s ease;
+}
+
+ytmusic-player-page #side-panel ytmusic-player-queue-item:not([selected]):hover {
+  background: rgb(255 255 255 / 0.08) !important;
+}
+
+ytmusic-player-page #side-panel ytmusic-player-queue-item[selected] {
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0.07)) !important;
+  box-shadow:
+    0 8px 20px -10px rgb(0 0 0 / 0.45),
+    inset 0 1px 0 rgb(255 255 255 / 0.22),
+    inset 0 0 0 1px rgb(255 255 255 / 0.14) !important;
+}
+
+ytmusic-player-page #side-panel ytmusic-player-queue-item[selected]:hover {
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.18), rgb(255 255 255 / 0.1)) !important;
+}
+
+/* already played items above the active track sit quieter, like sung lyrics */
+ytmusic-player-page #side-panel ytmusic-player-queue-item:has(~ ytmusic-player-queue-item[selected]) {
+  opacity: var(--spicy-queue-played-opacity);
+}
+
+ytmusic-player-page #side-panel ytmusic-player-queue-item:has(~ ytmusic-player-queue-item[selected]):hover {
+  opacity: 1;
+}
+
+/* rounded thumbnails cropped to fill without black letterbox bars */
+ytmusic-player-page #side-panel ytmusic-player-queue-item :is(.left-items, .thumbnail, ytmusic-thumbnail-renderer, #thumbnail) {
+  border-radius: var(--spicy-queue-thumb-radius) !important;
+  overflow: hidden !important;
+}
+
+ytmusic-player-page #side-panel ytmusic-player-queue-item .left-items {
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.35);
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+ytmusic-player-page #side-panel ytmusic-player-queue-item:hover .left-items {
+  transform: scale(1.04);
+}
+
+ytmusic-player-page #side-panel ytmusic-player-queue-item :is(#thumbnail img, yt-img-shadow img) {
+  object-fit: cover !important;
+  border-radius: inherit;
+}
+
+/* song title, artist and tabular duration hierarchy */
+ytmusic-player-page #side-panel ytmusic-player-queue-item .song-title {
+  font-weight: 600 !important;
+  color: rgb(255 255 255 / 0.9) !important;
+}
+
+ytmusic-player-page #side-panel ytmusic-player-queue-item[selected] .song-title {
+  font-weight: 700 !important;
+  color: #fff !important;
+}
+
+ytmusic-player-page #side-panel ytmusic-player-queue-item .byline {
+  color: rgb(255 255 255 / 0.58) !important;
+}
+
+ytmusic-player-page #side-panel ytmusic-player-queue-item[selected] .byline {
+  color: rgb(255 255 255 / 0.78) !important;
+}
+
+ytmusic-player-page #side-panel ytmusic-player-queue-item .duration {
+  font-variant-numeric: tabular-nums !important;
+  color: rgb(255 255 255 / 0.52) !important;
+}
+
+/* ---------------------------------------------------------------------------
    8d. Sidebar expand / collapse (smooth slide, fade and content shift)
        The left navigation drawer and the collapsed mini bar share one
        spring-like curve, so hiding or revealing the sidebar glides instead of
@@ -3118,6 +3340,10 @@ ytmusic-search-box #suggestion-list {
   ytmusic-player-page #side-panel #tabsContent::before,
   ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header,
   ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header::before,
+  ytmusic-player-page #side-panel ytmusic-queue-header-renderer #buttons :is(button, a.yt-spec-button-shape-next),
+  ytmusic-player-page #side-panel ytmusic-chip-cloud-chip-renderer a,
+  ytmusic-player-page #side-panel ytmusic-player-queue-item,
+  ytmusic-player-page #side-panel ytmusic-player-queue-item .left-items,
   ytmusic-player-page #player.ytmusic-player-page #song-media-window .top-row-buttons,
   ytmusic-app-layout tp-yt-app-drawer#guide #contentContainer,
   ytmusic-app-layout tp-yt-app-drawer#guide #scrim,
