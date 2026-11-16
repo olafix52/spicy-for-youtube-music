@@ -107,6 +107,15 @@ blyrics-line-scroll-below-duration = 700ms;
      stage on the left side that blends with the Kawarp background */
   --spicy-canvas-stage-opacity: 0.75;
 
+  /* video player card (music videos) */
+  --spicy-video-radius: clamp(12px, 1.3vw, 18px);
+  --spicy-video-shadow:
+    0 24px 56px -12px rgb(0 0 0 / 0.58),
+    0 10px 24px -6px rgb(0 0 0 / 0.42);
+  --spicy-video-rim:
+    inset 0 0 0 1px rgb(255 255 255 / 0.12),
+    inset 0 1px 0 rgb(255 255 255 / 0.2);
+
   /* picture-in-picture / spicy popup lyrics */
   --spicy-pip-artwork-radius: clamp(10px, 3vw, 16px);
   --spicy-pip-artwork-shadow: 0 10px 28px rgb(0 0 0 / 0.42), 0 2px 6px rgb(0 0 0 / 0.2);
@@ -1640,6 +1649,60 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
 }
 
 /* ---------------------------------------------------------------------------
+   7b-video. Video Player Card (Music Videos in normal view & fullscreen)
+      Gives music videos the same tactile depth as covers: rounded corners,
+      soft multi-layered elevation shadow, a subtle Liquid Glass inner rim,
+      and corner controls hidden until hover. Miniplayer, disabled fullscreen
+      (blyrics-dfs) and karaoke stage (blyrics-karaoke) are excluded.
+   ------------------------------------------------------------------------ */
+
+/* rounded frame & multi-layered elevation shadow */
+ytmusic-player-page:is([blyrics-video-mode], [video-mode]):not([player-ui-state="MINIPLAYER"]):not([blyrics-dfs]):not([blyrics-karaoke]) #player.ytmusic-player-page {
+  position: relative;
+  border-radius: var(--spicy-video-radius) !important;
+  overflow: hidden !important;
+  isolation: isolate;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  box-shadow: var(--spicy-video-shadow) !important;
+}
+
+/* clip hardware-accelerated video layers cleanly inside the rounded frame
+   (mask-image lives on the inner player so box-shadow on #player stays intact) */
+ytmusic-player-page:is([blyrics-video-mode], [video-mode]):not([player-ui-state="MINIPLAYER"]):not([blyrics-dfs]):not([blyrics-karaoke]) #player.ytmusic-player-page :is(ytmusic-player, #song-media-window, #movie_player, .html5-video-player, .html5-video-container, video.html5-main-video) {
+  border-radius: var(--spicy-video-radius) !important;
+}
+
+ytmusic-player-page:is([blyrics-video-mode], [video-mode]):not([player-ui-state="MINIPLAYER"]):not([blyrics-dfs]):not([blyrics-karaoke]) #player.ytmusic-player-page :is(ytmusic-player, #song-media-window, #movie_player, .html5-video-player) {
+  overflow: hidden !important;
+  -webkit-mask-image: radial-gradient(#fff, #fff);
+  mask-image: radial-gradient(#fff, #fff);
+}
+
+/* subtle Liquid Glass edge and top specular highlight over dark frames */
+ytmusic-player-page:is([blyrics-video-mode], [video-mode]):not([player-ui-state="MINIPLAYER"]):not([blyrics-dfs]):not([blyrics-karaoke]) #player.ytmusic-player-page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: var(--spicy-video-rim);
+}
+
+/* keep top-right miniplayer/fullscreen buttons tucked away until pointer hover */
+@media (hover: hover) {
+  ytmusic-player-page:not([player-fullscreened]):not([player-ui-state="MINIPLAYER"]):is([blyrics-video-mode], [video-mode]) #player.ytmusic-player-page #song-media-window .top-row-buttons {
+    opacity: 0;
+    transition: opacity 0.22s ease;
+  }
+
+  ytmusic-player-page:not([player-fullscreened]):not([player-ui-state="MINIPLAYER"]):is([blyrics-video-mode], [video-mode]) #player.ytmusic-player-page:is(:hover, :focus-within) #song-media-window .top-row-buttons {
+    opacity: 1;
+  }
+}
+
+/* ---------------------------------------------------------------------------
    7c. Rest of YouTube Music (home, library, browse), kept subtle
        Better Lyrics sets the cover as --blyrics-background-img on #layout,
        so it is usable outside the player page too. The page background and
@@ -3055,6 +3118,7 @@ ytmusic-search-box #suggestion-list {
   ytmusic-player-page #side-panel #tabsContent::before,
   ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header,
   ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header::before,
+  ytmusic-player-page #player.ytmusic-player-page #song-media-window .top-row-buttons,
   ytmusic-app-layout tp-yt-app-drawer#guide #contentContainer,
   ytmusic-app-layout tp-yt-app-drawer#guide #scrim,
   #layout #guide-wrapper::before,
