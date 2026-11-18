@@ -3459,6 +3459,26 @@ ytmusic-popup-container ytmusic-multi-page-menu-renderer ytd-compact-link-render
   }
 }
 
+/* Firefox: keep the inner search input transparent and borderless so it
+   never draws a second rounded frame inside ytmusic-search-box .search-box */
+ytmusic-search-box .search-box :is(input, input#input, input.ytmusic-search-box),
+ytmusic-search-box .search-box :is(input, input#input, input.ytmusic-search-box):is(:hover, :focus, :focus-visible) {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -moz-appearance: none !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+}
+
+ytmusic-search-box .search-box input:-moz-focusring {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 /* search suggestions drop down from the search box */
 ytmusic-search-box #suggestion-list {
   transform-origin: top center;
