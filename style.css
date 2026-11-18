@@ -3460,12 +3460,16 @@ ytmusic-popup-container ytmusic-multi-page-menu-renderer ytd-compact-link-render
 }
 
 /* Firefox: keep the inner search input transparent and borderless so it
-   never draws a second rounded frame inside ytmusic-search-box .search-box */
+   never draws a second rounded frame inside ytmusic-search-box */
+ytmusic-nav-bar ytmusic-search-box input,
+ytmusic-nav-bar ytmusic-search-box input:is(:hover, :focus, :focus-visible),
 ytmusic-search-box .search-box :is(input, input#input, input.ytmusic-search-box),
 ytmusic-search-box .search-box :is(input, input#input, input.ytmusic-search-box):is(:hover, :focus, :focus-visible) {
   background: transparent !important;
   background-color: transparent !important;
+  background-image: none !important;
   border: none !important;
+  border-width: 0 !important;
   border-radius: 0 !important;
   outline: none !important;
   box-shadow: none !important;
@@ -3474,6 +3478,7 @@ ytmusic-search-box .search-box :is(input, input#input, input.ytmusic-search-box)
   appearance: none !important;
 }
 
+ytmusic-nav-bar ytmusic-search-box input:-moz-focusring,
 ytmusic-search-box .search-box input:-moz-focusring {
   outline: none !important;
   box-shadow: none !important;
