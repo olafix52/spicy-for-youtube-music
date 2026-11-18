@@ -933,10 +933,16 @@ ytmusic-player-page:has(> :is(#better-lyrics-kawarp-player, #better-lyrics-kawar
 }
 
 /* Shaders draws on the home and search pages too, so the CSS cover
-   background of section 7c is dropped there */
-#layout:has(#better-lyrics-kawarp-homepage, #better-lyrics-kawarp-search, #better-lyrics-kawarp-search-page)::before {
+   background of section 7c is dropped there once a track is active */
+#layout:not([player-ui-state="INACTIVE"]):has(#better-lyrics-kawarp-homepage, #better-lyrics-kawarp-search, #better-lyrics-kawarp-search-page)::before {
   display: none;
   animation: none;
+}
+
+/* While no track is active (INACTIVE), Shaders has no cover and paints black,
+   so hide its empty layer and let the Spicy idle ambient gradient show */
+#layout[player-ui-state="INACTIVE"] :is(#better-lyrics-kawarp-homepage, #better-lyrics-kawarp-search, #better-lyrics-kawarp-search-page) {
+  opacity: 0 !important;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1735,6 +1741,17 @@ ytmusic-player-page:is([blyrics-video-mode], [video-mode]):not([player-ui-state=
   /* about 10 steps a second: under a 120px blur the drift looks the same,
      and the page is redrawn a tenth as often (measured about 40% less GPU) */
   animation: spicy-bg-drift-a var(--spicy-page-bg-duration) steps(450) infinite alternate;
+}
+
+/* idle home/browse fallback when no song is playing: subtle drifting gradient
+   in Spicy's warm crimson/plum and midnight-indigo palette */
+#layout[player-ui-state="INACTIVE"]::before {
+  background:
+    radial-gradient(62% 58% at 18% 20%, rgb(138 30 68 / 0.34), transparent 70%),
+    radial-gradient(56% 64% at 84% 24%, rgb(58 50 132 / 0.32), transparent 72%),
+    radial-gradient(68% 60% at 52% 88%, rgb(96 28 72 / 0.24), transparent 74%),
+    linear-gradient(160deg, #0e0c14 0%, #090a10 55%, #0d0912 100%);
+  filter: none;
 }
 
 /* let the background show through the black YouTube Music layers
