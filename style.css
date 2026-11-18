@@ -3501,6 +3501,26 @@ ytmusic-search-box .search-box input:-moz-focusring {
   box-shadow: none !important;
 }
 
+/* Firefox: only the outer .search-box draws the field. Every other layer inside
+   the search box (input, icon button, placeholder) stays flat and transparent,
+   so no second lighter frame can stack on top of the outer one, in any state */
+ytmusic-search-box :is(.search-container, .search-box) *:not(#suggestion-list, #suggestion-list *),
+ytmusic-search-box .search-box:is(:hover, :focus-within) *:not(#suggestion-list, #suggestion-list *),
+ytmusic-search-box .search-box input::placeholder {
+  background: transparent !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+}
+
+ytmusic-search-box .search-box {
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
 /* search suggestions drop down from the search box */
 ytmusic-search-box #suggestion-list {
   transform-origin: top center;
