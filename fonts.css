@@ -59,6 +59,7 @@
        url("https://cdn.jsdelivr.net/npm/sf-pro@1.0.4/font/woff2/sf-pro-text_regular.woff2") format("woff2");
 }
 
+/* sf-pro@1.0.4 omits Text Medium; falls back to Display Medium when not installed locally */
 @font-face {
   font-family: "SF Pro Text";
   font-style: normal;

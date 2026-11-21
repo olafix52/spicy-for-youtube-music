@@ -175,7 +175,7 @@ blyrics-line-scroll-below-duration = 700ms;
      sung words at 85% white (not pure white) */
   --blyrics-inactive-opacity: 0.5;
   --blyrics-active-opacity: 0.85;
-  /* credits: Spicy displays them at 60% white instead of Better Lyrics default 20% */
+  /* credits: Spicy displays them at 55% white instead of Better Lyrics default 20% */
   --blyrics-credits-opacity: var(--spicy-credits-opacity);
   --blyrics-credits-focused-opacity: var(--spicy-credits-focused-opacity);
   /* Spicy glows a sung word softly: up to 35% white, 4 to 6px wide
@@ -1319,7 +1319,7 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
 
 .blyrics-progress__times {
   margin-top: 8px;
-  font-size: 0.95rem;
+  font-size: 15px;
   font-weight: 500;
   color: rgb(255 255 255 / 0.55);
 }
@@ -1551,7 +1551,7 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
 @media (orientation: portrait) {
   ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) {
     --spicy-fs-art-size: clamp(0px, 13vh, 24vw);
-    --spicy-fs-font-size: calc(clamp(1.85rem, 6.5vw, 5.5rem) * var(--spicy-lyrics-scale, 1));
+    --spicy-fs-font-size: calc(clamp(30px, 6.5vw, 88px) * var(--spicy-lyrics-scale, 1));
     --blyrics-fullscreen-panel-size: 100%;
   }
 
@@ -2615,7 +2615,7 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
   letter-spacing: -0.01em;
   line-height: 1.2 !important;
   color: hsla(0, 0%, 100%, 0.92) !important;
-  padding: 0.65rem 1.35rem !important;
+  padding: 10px 22px !important;
   border: none !important;
   border-radius: 999px !important;
   background: rgba(255, 255, 255, 0.08) !important;
