@@ -644,6 +644,7 @@ blyrics-line-scroll-below-duration = 700ms;
   .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) :is(.blyrics--word[data-long-word]:not([data-word-state="upcoming"]), .blyrics--word[data-long-word]:not([data-word-state="upcoming"]) .blyrics-sweep-text) > .blyrics--letter {
     --spicy-letter-slot: calc(var(--blyrics-duration, 1000ms) / var(--letters, 1));
     --spicy-letter-x: calc((var(--spicy-letter-i, 0) - (var(--letters, 1) - 1) / 2) * var(--spicy-letter-spread));
+    will-change: scale, translate;
     animation:
       spicy-letter-sung 1.64s linear var(--blyrics-duration, 1000ms) forwards,
       spicy-letter-wave calc(var(--spicy-letter-slot) * 2 + 0.55s) linear clamp(0s, calc(var(--spicy-letter-slot) * (var(--spicy-letter-i, 0) + 1) / 1.2 + var(--blyrics-duration, 1000ms) / 6 + var(--spicy-letter-follow) - (var(--spicy-letter-slot) * 2 + 0.55s) * 0.46), 100s);
@@ -653,11 +654,16 @@ blyrics-line-scroll-below-duration = 700ms;
   .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) :is(.blyrics--word.blyrics-rtl[data-long-word]:not([data-word-state="upcoming"]), .blyrics--word.blyrics-rtl[data-long-word]:not([data-word-state="upcoming"]) .blyrics-sweep-text) > .blyrics--letter {
     --spicy-letter-x: calc(((var(--letters, 1) - 1) / 2 - var(--spicy-letter-i, 0)) * var(--spicy-letter-spread));
   }
+
+  /* static pre-rasterized glow while a held syllable waves, keeping
+     spicy-letter-wave purely compositor-driven (scale and translate only) */
+  .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) :is(.blyrics--word[data-long-word]:not([data-word-state="upcoming"]):not([data-word-state="past"]), .blyrics--word[data-long-word]:not([data-word-state="upcoming"]):not([data-word-state="past"]) .blyrics-sweep-text) > .blyrics--letter {
+    text-shadow: 0 0 14px rgb(255 255 255 / calc(0.65 * var(--spicy-letter-glow)));
+  }
 }
 
 /* the letter glow is drawn once: the engine lays a highlighted copy of every
-   letter over the text, and a shadow on both doubled the glow (important
-   beats the wave animation's text-shadow on the copy) */
+   letter over the text, and a shadow on both doubled the glow */
 .blyrics-highlight-run,
 .blyrics-highlight-run :is(.blyrics--word, .blyrics--letter) {
   text-shadow: none !important;
@@ -670,29 +676,29 @@ blyrics-line-scroll-below-duration = 700ms;
 /* one letter's wave; the start and the end are left to the letter's own
    value, so it rises from and settles to wherever it rests */
 @keyframes spicy-letter-wave {
-  4% { scale: calc(var(--spicy-letter-rest-scale) + 0.0013 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.011) calc(var(--spicy-letter-rest-y) + -0.0007em * var(--spicy-letter-strength)); text-shadow: 0 0 4.1px rgb(255 255 255 / calc(0.011 * var(--spicy-letter-glow))); }
-  8% { scale: calc(var(--spicy-letter-rest-scale) + 0.0080 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.065) calc(var(--spicy-letter-rest-y) + -0.0044em * var(--spicy-letter-strength)); text-shadow: 0 0 4.8px rgb(255 255 255 / calc(0.065 * var(--spicy-letter-glow))); }
-  12% { scale: calc(var(--spicy-letter-rest-scale) + 0.0215 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.176) calc(var(--spicy-letter-rest-y) + -0.0117em * var(--spicy-letter-strength)); text-shadow: 0 0 6.1px rgb(255 255 255 / calc(0.176 * var(--spicy-letter-glow))); }
-  16% { scale: calc(var(--spicy-letter-rest-scale) + 0.0405 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.331) calc(var(--spicy-letter-rest-y) + -0.0220em * var(--spicy-letter-strength)); text-shadow: 0 0 8.0px rgb(255 255 255 / calc(0.331 * var(--spicy-letter-glow))); }
-  20% { scale: calc(var(--spicy-letter-rest-scale) + 0.0629 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.515) calc(var(--spicy-letter-rest-y) + -0.0335em * var(--spicy-letter-strength)); text-shadow: 0 0 10.2px rgb(255 255 255 / calc(0.515 * var(--spicy-letter-glow))); }
-  24% { scale: calc(var(--spicy-letter-rest-scale) + 0.0843 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.690) calc(var(--spicy-letter-rest-y) + -0.0445em * var(--spicy-letter-strength)); text-shadow: 0 0 12.3px rgb(255 255 255 / calc(0.690 * var(--spicy-letter-glow))); }
-  28% { scale: calc(var(--spicy-letter-rest-scale) + 0.1000 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.818) calc(var(--spicy-letter-rest-y) + -0.0499em * var(--spicy-letter-strength)); text-shadow: 0 0 13.8px rgb(255 255 255 / calc(0.818 * var(--spicy-letter-glow))); }
-  32% { scale: calc(var(--spicy-letter-rest-scale) + 0.1090 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.892) calc(var(--spicy-letter-rest-y) + -0.0488em * var(--spicy-letter-strength)); text-shadow: 0 0 14.7px rgb(255 255 255 / calc(0.892 * var(--spicy-letter-glow))); }
-  36% { scale: calc(var(--spicy-letter-rest-scale) + 0.1151 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.942) calc(var(--spicy-letter-rest-y) + -0.0447em * var(--spicy-letter-strength)); text-shadow: 0 0 15.3px rgb(255 255 255 / calc(0.942 * var(--spicy-letter-glow))); }
-  40% { scale: calc(var(--spicy-letter-rest-scale) + 0.1194 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.977) calc(var(--spicy-letter-rest-y) + -0.0393em * var(--spicy-letter-strength)); text-shadow: 0 0 15.7px rgb(255 255 255 / calc(0.977 * var(--spicy-letter-glow))); }
-  44% { scale: calc(var(--spicy-letter-rest-scale) + 0.1222 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 1.000) calc(var(--spicy-letter-rest-y) + -0.0339em * var(--spicy-letter-strength)); text-shadow: 0 0 16.0px rgb(255 255 255 / calc(1.000 * var(--spicy-letter-glow))); }
-  48% { scale: calc(var(--spicy-letter-rest-scale) + 0.1222 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 1.000) calc(var(--spicy-letter-rest-y) + -0.0289em * var(--spicy-letter-strength)); text-shadow: 0 0 16.0px rgb(255 255 255 / calc(1.000 * var(--spicy-letter-glow))); }
-  52% { scale: calc(var(--spicy-letter-rest-scale) + 0.1176 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.962) calc(var(--spicy-letter-rest-y) + -0.0227em * var(--spicy-letter-strength)); text-shadow: 0 0 15.5px rgb(255 255 255 / calc(0.962 * var(--spicy-letter-glow))); }
-  56% { scale: calc(var(--spicy-letter-rest-scale) + 0.1095 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.896) calc(var(--spicy-letter-rest-y) + -0.0157em * var(--spicy-letter-strength)); text-shadow: 0 0 14.8px rgb(255 255 255 / calc(0.896 * var(--spicy-letter-glow))); }
-  60% { scale: calc(var(--spicy-letter-rest-scale) + 0.0997 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.816) calc(var(--spicy-letter-rest-y) + -0.0093em * var(--spicy-letter-strength)); text-shadow: 0 0 13.8px rgb(255 255 255 / calc(0.816 * var(--spicy-letter-glow))); }
-  64% { scale: calc(var(--spicy-letter-rest-scale) + 0.0890 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.728) calc(var(--spicy-letter-rest-y) + -0.0042em * var(--spicy-letter-strength)); text-shadow: 0 0 12.7px rgb(255 255 255 / calc(0.728 * var(--spicy-letter-glow))); }
-  68% { scale: calc(var(--spicy-letter-rest-scale) + 0.0783 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.641) calc(var(--spicy-letter-rest-y) + -0.0008em * var(--spicy-letter-strength)); text-shadow: 0 0 11.7px rgb(255 255 255 / calc(0.641 * var(--spicy-letter-glow))); }
-  72% { scale: calc(var(--spicy-letter-rest-scale) + 0.0676 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.553) calc(var(--spicy-letter-rest-y) + 0.0010em * var(--spicy-letter-strength)); text-shadow: 0 0 10.6px rgb(255 255 255 / calc(0.553 * var(--spicy-letter-glow))); }
-  76% { scale: calc(var(--spicy-letter-rest-scale) + 0.0557 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.456) calc(var(--spicy-letter-rest-y) + 0.0020em * var(--spicy-letter-strength)); text-shadow: 0 0 9.5px rgb(255 255 255 / calc(0.456 * var(--spicy-letter-glow))); }
-  80% { scale: calc(var(--spicy-letter-rest-scale) + 0.0454 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.372) calc(var(--spicy-letter-rest-y) + 0.0023em * var(--spicy-letter-strength)); text-shadow: 0 0 8.5px rgb(255 255 255 / calc(0.372 * var(--spicy-letter-glow))); }
-  84% { scale: calc(var(--spicy-letter-rest-scale) + 0.0361 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.295) calc(var(--spicy-letter-rest-y) + 0.0019em * var(--spicy-letter-strength)); text-shadow: 0 0 7.5px rgb(255 255 255 / calc(0.295 * var(--spicy-letter-glow))); }
-  88% { scale: calc(var(--spicy-letter-rest-scale) + 0.0279 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.228) calc(var(--spicy-letter-rest-y) + 0.0012em * var(--spicy-letter-strength)); text-shadow: 0 0 6.7px rgb(255 255 255 / calc(0.228 * var(--spicy-letter-glow))); }
-  92% { scale: calc(var(--spicy-letter-rest-scale) + 0.0210 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.172) calc(var(--spicy-letter-rest-y) + 0.0002em * var(--spicy-letter-strength)); text-shadow: 0 0 6.1px rgb(255 255 255 / calc(0.172 * var(--spicy-letter-glow))); }
+  4% { scale: calc(var(--spicy-letter-rest-scale) + 0.0013 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.011) calc(var(--spicy-letter-rest-y) + -0.0007em * var(--spicy-letter-strength)); }
+  8% { scale: calc(var(--spicy-letter-rest-scale) + 0.0080 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.065) calc(var(--spicy-letter-rest-y) + -0.0044em * var(--spicy-letter-strength)); }
+  12% { scale: calc(var(--spicy-letter-rest-scale) + 0.0215 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.176) calc(var(--spicy-letter-rest-y) + -0.0117em * var(--spicy-letter-strength)); }
+  16% { scale: calc(var(--spicy-letter-rest-scale) + 0.0405 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.331) calc(var(--spicy-letter-rest-y) + -0.0220em * var(--spicy-letter-strength)); }
+  20% { scale: calc(var(--spicy-letter-rest-scale) + 0.0629 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.515) calc(var(--spicy-letter-rest-y) + -0.0335em * var(--spicy-letter-strength)); }
+  24% { scale: calc(var(--spicy-letter-rest-scale) + 0.0843 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.690) calc(var(--spicy-letter-rest-y) + -0.0445em * var(--spicy-letter-strength)); }
+  28% { scale: calc(var(--spicy-letter-rest-scale) + 0.1000 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.818) calc(var(--spicy-letter-rest-y) + -0.0499em * var(--spicy-letter-strength)); }
+  32% { scale: calc(var(--spicy-letter-rest-scale) + 0.1090 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.892) calc(var(--spicy-letter-rest-y) + -0.0488em * var(--spicy-letter-strength)); }
+  36% { scale: calc(var(--spicy-letter-rest-scale) + 0.1151 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.942) calc(var(--spicy-letter-rest-y) + -0.0447em * var(--spicy-letter-strength)); }
+  40% { scale: calc(var(--spicy-letter-rest-scale) + 0.1194 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.977) calc(var(--spicy-letter-rest-y) + -0.0393em * var(--spicy-letter-strength)); }
+  44% { scale: calc(var(--spicy-letter-rest-scale) + 0.1222 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 1.000) calc(var(--spicy-letter-rest-y) + -0.0339em * var(--spicy-letter-strength)); }
+  48% { scale: calc(var(--spicy-letter-rest-scale) + 0.1222 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 1.000) calc(var(--spicy-letter-rest-y) + -0.0289em * var(--spicy-letter-strength)); }
+  52% { scale: calc(var(--spicy-letter-rest-scale) + 0.1176 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.962) calc(var(--spicy-letter-rest-y) + -0.0227em * var(--spicy-letter-strength)); }
+  56% { scale: calc(var(--spicy-letter-rest-scale) + 0.1095 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.896) calc(var(--spicy-letter-rest-y) + -0.0157em * var(--spicy-letter-strength)); }
+  60% { scale: calc(var(--spicy-letter-rest-scale) + 0.0997 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.816) calc(var(--spicy-letter-rest-y) + -0.0093em * var(--spicy-letter-strength)); }
+  64% { scale: calc(var(--spicy-letter-rest-scale) + 0.0890 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.728) calc(var(--spicy-letter-rest-y) + -0.0042em * var(--spicy-letter-strength)); }
+  68% { scale: calc(var(--spicy-letter-rest-scale) + 0.0783 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.641) calc(var(--spicy-letter-rest-y) + -0.0008em * var(--spicy-letter-strength)); }
+  72% { scale: calc(var(--spicy-letter-rest-scale) + 0.0676 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.553) calc(var(--spicy-letter-rest-y) + 0.0010em * var(--spicy-letter-strength)); }
+  76% { scale: calc(var(--spicy-letter-rest-scale) + 0.0557 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.456) calc(var(--spicy-letter-rest-y) + 0.0020em * var(--spicy-letter-strength)); }
+  80% { scale: calc(var(--spicy-letter-rest-scale) + 0.0454 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.372) calc(var(--spicy-letter-rest-y) + 0.0023em * var(--spicy-letter-strength)); }
+  84% { scale: calc(var(--spicy-letter-rest-scale) + 0.0361 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.295) calc(var(--spicy-letter-rest-y) + 0.0019em * var(--spicy-letter-strength)); }
+  88% { scale: calc(var(--spicy-letter-rest-scale) + 0.0279 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.228) calc(var(--spicy-letter-rest-y) + 0.0012em * var(--spicy-letter-strength)); }
+  92% { scale: calc(var(--spicy-letter-rest-scale) + 0.0210 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.172) calc(var(--spicy-letter-rest-y) + 0.0002em * var(--spicy-letter-strength)); }
 }
 
 /* all letters of a sung word back to normal on the Spicy springs */
@@ -1203,12 +1209,13 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
     inset 0 1px 0 rgba(255, 255, 255, 0.36),
     inset 0 0 0 1px rgba(255, 255, 255, 0.16),
     inset 0 -1px 0 rgba(255, 255, 255, 0.18);
-  transition: height 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* iOS-style thickening while engaged or hovered */
 ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls :is(.blyrics-progress__bar:hover, .blyrics-progress__bar.dragging) {
-  height: clamp(13px, calc(var(--spicy-fs-art-size) * 0.036), 22px);
+  transform: scaleY(1.45);
 }
 
 ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls .blyrics-progress__fill {
@@ -1301,20 +1308,21 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
 
 .blyrics-progress__bar {
   height: 6px;
-  transition: height 160ms ease;
+  transform-origin: center;
+  transition: transform 160ms ease;
 }
 
 .blyrics-progress__bar:hover,
 .blyrics-progress__bar.dragging {
-  height: 8px;
+  transform: scaleY(1.3333);
 }
 
 .blyrics-progress__knob-dot {
   transform: translate(-50%, -50%) scale(0);
 }
 
-.blyrics-progress__bar:hover .blyrics-progress__knob-dot {
-  transform: translate(-50%, -50%) scale(1);
+.blyrics-progress__bar:is(:hover, .dragging) .blyrics-progress__knob-dot {
+  transform: translate(-50%, -50%) scale(1, 0.75);
 }
 
 .blyrics-progress__times {
@@ -1530,10 +1538,6 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
 
   ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #blyrics-fs-controls .blyrics-progress__bar {
     height: clamp(8px, calc(var(--spicy-fs-art-size) * 0.016), 12px) !important;
-  }
-
-  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #blyrics-fs-controls :is(.blyrics-progress__bar:hover, .blyrics-progress__bar.dragging) {
-    height: clamp(12px, calc(var(--spicy-fs-art-size) * 0.026), 16px) !important;
   }
 
   ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #blyrics-fs-controls .blyrics-progress__times {
@@ -2187,12 +2191,13 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
   height: 4px;
   background: rgb(255 255 255 / 0.18);
   border-radius: 9999px;
-  transition: height 0.2s ease;
+  transform-origin: center;
+  transition: transform 0.2s ease;
 }
 
 .blyrics-pip-progress:hover .blyrics-progress__bar,
 .blyrics-pip-progress .blyrics-progress__bar.dragging {
-  height: 6px;
+  transform: scaleY(1.5);
 }
 
 .blyrics-pip-progress :is(.blyrics-progress__fill, .blyrics-progress__played) {
@@ -2203,6 +2208,11 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 .blyrics-pip-progress .blyrics-progress__knob-dot {
   background: #ffffff;
   box-shadow: 0 0 8px rgb(255 255 255 / 0.7);
+}
+
+.blyrics-pip-progress:hover .blyrics-progress__knob-dot,
+.blyrics-pip-progress .blyrics-progress__bar.dragging .blyrics-progress__knob-dot {
+  transform: translate(-50%, -50%) scale(1, 0.6667);
 }
 
 /* header: song title and artist */

@@ -36,7 +36,7 @@
     "videoZoomRelease": 0.12,
     "videoSampleWidth": 208,
     "videoSampleHeight": 117,
-    "videoFrameRate": 0,
+    "videoFrameRate": 30,
     "videoColorResponse": 250,
     "videoBrightnessSampleSize": 32,
     "videoBrightnessInterval": 100,
