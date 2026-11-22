@@ -35,6 +35,11 @@ blyrics-line-scroll-below-duration = 700ms;
    "lite" (no backdrop-filter blur passes, fastest GPU path) */
 $spicy-glass-style: frosted;
 
+/* soft gradient mask fade on the side-panel scroll container (#tab-renderer):
+   false (default, avoids full-height GaneshGL RenderPass overhead in Chromium)
+   or true (keeps the top/bottom edge fade mask from Better Lyrics) */
+$spicy-scroll-fade: false;
+
 :root {
   /* global lyrics size multiplier (0.6 to 2.0, matching Spicy 6.5.0 --SL-LyricsScale) */
   --spicy-lyrics-scale: 1;
@@ -3273,12 +3278,21 @@ ytmusic-player-page #side-panel ytmusic-chip-cloud-renderer #chips {
   mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 34px), transparent 100%);
 }
 
-/* hide vertical and horizontal scrollbars across side-panel tabs,
-   keeping wheel/trackpad scrolling intact with a soft bottom fade */
-ytmusic-player-page #side-panel #tab-renderer:not([page-type="MUSIC_PAGE_TYPE_TRACK_LYRICS"]) {
-  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 calc(100% - 42px), transparent 100%);
-  mask-image: linear-gradient(180deg, #000 0%, #000 calc(100% - 42px), transparent 100%);
+/* side-panel scroll container edge fade mask, controlled by $spicy-scroll-fade */
+@if $spicy-scroll-fade == true or $spicy-scroll-fade == "true" {
+  ytmusic-player-page #side-panel #tab-renderer:not([page-type="MUSIC_PAGE_TYPE_TRACK_LYRICS"]) {
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 calc(100% - 42px), transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 calc(100% - 42px), transparent 100%);
+  }
+} @else {
+  #tab-renderer[page-type="MUSIC_PAGE_TYPE_TRACK_LYRICS"],
+  ytmusic-player-page #side-panel #tab-renderer {
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+  }
 }
+
+/* hide vertical and horizontal scrollbars across side-panel tabs */
 
 ytmusic-player-page #side-panel,
 ytmusic-player-page #side-panel :is(#tab-renderer, ytmusic-tab-renderer, ytmusic-player-queue, ytmusic-player-queue #contents, ytmusic-section-list-renderer, ytmusic-section-list-renderer #contents, ytmusic-carousel-renderer, ytmusic-carousel-renderer #items) {
