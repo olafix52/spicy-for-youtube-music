@@ -453,14 +453,12 @@ $spicy-glass-style: frosted;
     text-shadow 0.3s ease;
 }
 
-/* Smooth blur transition only for lines entering or leaving the focal zone */
+/* Smooth blur transition only for lines entering or leaving the immediate focal zone */
 .blyrics-container > :where(
   .blyrics--active,
   .blyrics--animating:has(~ .blyrics--active),
   .blyrics--line:has(+ .blyrics--active),
-  .blyrics--active + .blyrics--line,
-  .blyrics--line:has(+ .blyrics--line + .blyrics--active),
-  .blyrics--active + .blyrics--line + .blyrics--line
+  .blyrics--active + .blyrics--line
 ) {
   transition:
     filter var(--spicy-line-transition),
@@ -583,9 +581,7 @@ $spicy-glass-style: frosted;
 #autoscroll-resume-wrapper:has(> .autoscroll-resume-button:not([autoscroll-hidden="true"])) + #tab-renderer .blyrics-container > .blyrics--line {
   --spicy-level: 0;
   filter: none;
-  transition:
-    opacity 0.25s ease,
-    text-shadow 0.3s ease;
+  transition: none;
 }
 
 /* unsynced lyrics: plain, readable */
@@ -653,17 +649,19 @@ $spicy-glass-style: frosted;
    thousands of finished animations alive late in a song), and only the
    lines around the active one carry the animation at all, so finished ones
    are dropped as the song moves on. */
-/* every word not sung yet sits smaller and a little lower, in all lines,
-   as Spicy does from the start. Doing it only in the line being sung made
-   the next line visibly shrink and thin out shortly before it started
-   (with early scroll on, the engine marks it active before it starts). */
-.blyrics-container[data-sync="richsync"] .blyrics--word {
+/* Keep resting word scale/lift on the active, animating, and next two upcoming
+   lines so upcoming lyrics are already pre-scaled while blurred (no visible shrink
+   before singing), without creating 1000+ idle TransformNodes across the whole song
+   that split Chromium compositor layers during manual scrolling. Word transitions
+   stay scoped to the active/animating zone so entering +2 does not spawn scale
+   animations on every line advance. */
+.blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) .blyrics--word {
   transition:
     scale 0.3s ease,
     translate 0.3s ease;
 }
 
-.blyrics-container[data-sync="richsync"] .blyrics--word[data-word-state="upcoming"] {
+.blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, .blyrics--active + .blyrics--line, .blyrics--active + .blyrics--line + .blyrics--line) .blyrics--word[data-word-state="upcoming"] {
   scale: var(--spicy-word-rest-scale);
   translate: 0 var(--spicy-word-rest-y);
 }
@@ -671,7 +669,6 @@ $spicy-glass-style: frosted;
 .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) .blyrics--word:not([data-word-state="upcoming"]) {
   --spicy-lift-rise: clamp(var(--spicy-word-rise-min), calc(var(--blyrics-duration, 300ms) + var(--spicy-word-rise-extra)), 100s);
   --spicy-scale-rise: calc(var(--spicy-lift-rise) + var(--spicy-word-scale-lag));
-  will-change: scale, translate;
   animation:
     spicy-word-lift-settle 1.64s linear var(--spicy-lift-rise) backwards,
     spicy-word-lift-rise var(--spicy-lift-rise) cubic-bezier(0.33, 0, 0.58, 1),
