@@ -30,8 +30,9 @@ blyrics-line-scroll-below-duration = 700ms;
 /* ---------------------------------------------------------------------------
    1. Tunables
    ------------------------------------------------------------------------ */
-/* glass surface preset: "frosted" (default, matte dark frost without edge glare)
-   or "liquid" (glossy refraction with specular edge highlights) */
+/* glass surface preset: "frosted" (default, matte dark frost without edge glare),
+   "liquid" (glossy refraction with specular edge highlights), or
+   "lite" (no backdrop-filter blur passes, fastest GPU path) */
 $spicy-glass-style: frosted;
 
 :root {
@@ -224,6 +225,58 @@ $spicy-glass-style: frosted;
       inset 0 1px 0 rgb(255 255 255 / 0.3),
       inset 0 0 0 1px rgb(255 255 255 / 0.18),
       0 4px 14px rgb(0 0 0 / 0.28);
+
+    --spicy-pip-controls-bg: rgb(0 0 0 / 0.38);
+    --spicy-pip-controls-filter: blur(12px);
+    --spicy-pip-control-bg: rgb(255 255 255 / 0.14);
+    --spicy-pip-control-filter: blur(16px);
+  } @else if $spicy-glass-style == lite or $spicy-glass-style == "lite" {
+    /* Lite preset: zero backdrop-filter passes, higher-opacity dark surfaces */
+    --spicy-glass: rgb(14 16 22 / 0.82);
+    --spicy-glass-bar-filter: none;
+
+    --spicy-video-rim: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+
+    --spicy-glass-card-active-bg: rgb(255 255 255 / 0.09);
+    --spicy-glass-card-active-hover-bg: rgb(255 255 255 / 0.14);
+    --spicy-glass-card-active-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1);
+
+    --spicy-capsule-bg: rgb(22 24 30 / 0.84);
+    --spicy-capsule-hover-bg: rgb(34 37 46 / 0.9);
+    --spicy-capsule-filter: none;
+    --spicy-capsule-shadow:
+      0 6px 18px -8px rgb(0 0 0 / 0.45),
+      inset 0 0 0 1px rgb(255 255 255 / 0.1);
+    --spicy-capsule-hover-shadow:
+      0 8px 20px -8px rgb(0 0 0 / 0.52),
+      inset 0 0 0 1px rgb(255 255 255 / 0.16);
+
+    --spicy-menu-bg: rgb(20 22 28 / 0.94);
+    --spicy-menu-filter: none;
+    --spicy-menu-shadow:
+      0 12px 28px -8px rgb(0 0 0 / 0.56),
+      inset 0 0 0 1px rgb(255 255 255 / 0.1);
+    --spicy-menu-item-active-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.14);
+
+    --spicy-slider-bg: rgb(18 20 26 / 0.68);
+    --spicy-slider-filter: none;
+    --spicy-slider-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12);
+
+    --spicy-chip-bg: rgb(255 255 255 / 0.08);
+    --spicy-chip-hover-bg: rgb(255 255 255 / 0.14);
+    --spicy-chip-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.09);
+    --spicy-chip-hover-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.16);
+    --spicy-chip-selected-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.2);
+
+    --spicy-control-bg: rgb(255 255 255 / 0.1);
+    --spicy-control-hover-bg: rgb(255 255 255 / 0.16);
+    --spicy-control-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1);
+    --spicy-control-hover-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.18);
+
+    --spicy-pip-controls-bg: rgb(0 0 0 / 0.58);
+    --spicy-pip-controls-filter: none;
+    --spicy-pip-control-bg: rgb(24 26 34 / 0.82);
+    --spicy-pip-control-filter: none;
   } @else {
     /* Frosted Glass preset (default): matte dark frost, uniform hairline, no specular glare */
     --spicy-glass: rgb(18 20 26 / 0.56);
@@ -280,6 +333,11 @@ $spicy-glass-style: frosted;
     --spicy-control-hover-shadow:
       inset 0 0 0 1px rgb(255 255 255 / 0.18),
       0 4px 12px rgb(0 0 0 / 0.26);
+
+    --spicy-pip-controls-bg: rgb(0 0 0 / 0.38);
+    --spicy-pip-controls-filter: blur(12px);
+    --spicy-pip-control-bg: rgb(255 255 255 / 0.14);
+    --spicy-pip-control-filter: blur(16px);
   }
 
   /* ---- Better Lyrics variables ---- */
@@ -2118,8 +2176,23 @@ ytmusic-chip-cloud-renderer iron-selector::-webkit-scrollbar {
    ------------------------------------------------------------------------ */
 #player-bar-background {
   background: var(--spicy-glass) !important;
-  backdrop-filter: var(--spicy-glass-bar-filter);
   border-top: 1px solid rgb(255 255 255 / 0.08) !important;
+}
+
+#player-bar-background,
+ytmusic-app[blyrics-stylized] #player-bar-background {
+  backdrop-filter: var(--spicy-glass-bar-filter) !important;
+  -webkit-backdrop-filter: var(--spicy-glass-bar-filter) !important;
+}
+
+/* Skip player-bar backdrop blur on the player page and fullscreen: the
+   background is already heavily blurred (Kawarp or 100px blur), so blurring
+   the bar changes almost nothing visually while forcing Chromium and Firefox
+   to re-blur the whole strip every frame as lyrics scroll near it. */
+#layout:is([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"], [player-fullscreened]) #player-bar-background,
+ytmusic-app[blyrics-stylized] #layout:is([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"], [player-fullscreened]) #player-bar-background {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 ytmusic-player-bar {
@@ -2233,15 +2306,15 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 /* frosted glass player controls overlay */
 .blyrics-pip-artwork__controls {
   --blyrics-pip-control-size: clamp(26px, 8vw, 38px);
-  background: rgb(0 0 0 / 0.38);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--spicy-pip-controls-bg);
+  backdrop-filter: var(--spicy-pip-controls-filter);
+  -webkit-backdrop-filter: var(--spicy-pip-controls-filter);
 }
 
 .blyrics-pip-artwork__control::before {
-  background: rgb(255 255 255 / 0.14);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: var(--spicy-pip-control-bg);
+  backdrop-filter: var(--spicy-pip-control-filter);
+  -webkit-backdrop-filter: var(--spicy-pip-control-filter);
   border: 1px solid rgb(255 255 255 / 0.2);
   box-shadow: 0 4px 14px rgb(0 0 0 / 0.32);
 }
