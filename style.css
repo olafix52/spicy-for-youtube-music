@@ -70,8 +70,9 @@ $spicy-glass-style: frosted;
   /* animated background */
   --spicy-bg-duration: 45s;
   --spicy-bg-brightness: 45%;
-  /* Better Lyrics Shaders (Kawarp) background, values from Spicy */
-  --spicy-kawarp-saturate: 2.5;
+  /* Better Lyrics Shaders (Kawarp) dim level (0 to 1, lower is darker;
+     saturation lives natively in shader.json to avoid a full-screen CSS
+     filter pass over the WebGL canvas in Chromium) */
   --spicy-kawarp-brightness: 0.65;
 
   /* word bounce, simulated from Spicy's LyricsAnimator.ts + Spring.ts:
@@ -447,7 +448,6 @@ $spicy-glass-style: frosted;
 .blyrics-container > :where(.blyrics--line) {
   --spicy-level: 4;
   contain: layout style;
-  backface-visibility: hidden;
   transition:
     opacity var(--spicy-line-transition),
     text-shadow 0.3s ease;
@@ -460,8 +460,7 @@ $spicy-glass-style: frosted;
   .blyrics--line:has(+ .blyrics--active),
   .blyrics--active + .blyrics--line,
   .blyrics--line:has(+ .blyrics--line + .blyrics--active),
-  .blyrics--active + .blyrics--line + .blyrics--line,
-  .blyrics--line:hover
+  .blyrics--active + .blyrics--line + .blyrics--line
 ) {
   transition:
     filter var(--spicy-line-transition),
@@ -503,6 +502,10 @@ $spicy-glass-style: frosted;
   opacity: calc(1 - (1 - var(--spicy-line-idle-opacity)) * clamp(0, var(--spicy-level), 1));
 }
 
+.blyrics-container:is([data-sync="richsync"], [data-sync="synced"]) > .blyrics--line:where(.blyrics--active, .blyrics--animating:has(~ .blyrics--active)) {
+  filter: none;
+}
+
 /* sung lines (above the active one) and coming lines (after it) get their
    own level, with a plain sibling selector instead of :has() */
 .blyrics-container > .blyrics--line {
@@ -516,8 +519,9 @@ $spicy-glass-style: frosted;
 /* hover: sharp and fully visible, like Spicy. Spicy's text reads about
    75% white under the pointer (50% letters over a 50% text shadow), so the
    waiting color is lifted to that; the line being sung keeps its colors. */
-.blyrics-container > .blyrics--line:hover {
+.blyrics-container:is([data-sync="richsync"], [data-sync="synced"]) > .blyrics--line:hover {
   --spicy-level: 0;
+  filter: none;
 }
 
 .blyrics-container > .blyrics--line:not(.blyrics--active):hover {
@@ -546,6 +550,7 @@ $spicy-glass-style: frosted;
    and the box stays inside the line. */
 .blyrics-container:not([data-sync="none"]) > .blyrics--line:not(.blyrics--instrumental) {
   position: relative;
+  isolation: isolate;
 }
 
 .blyrics-container > .blyrics--line {
@@ -577,6 +582,10 @@ $spicy-glass-style: frosted;
    there avoids a :root:has() that restyled the whole page on each toggle. */
 #autoscroll-resume-wrapper:has(> .autoscroll-resume-button:not([autoscroll-hidden="true"])) + #tab-renderer .blyrics-container > .blyrics--line {
   --spicy-level: 0;
+  filter: none;
+  transition:
+    opacity 0.25s ease,
+    text-shadow 0.3s ease;
 }
 
 /* unsynced lyrics: plain, readable */
@@ -649,7 +658,6 @@ $spicy-glass-style: frosted;
    the next line visibly shrink and thin out shortly before it started
    (with early scroll on, the engine marks it active before it starts). */
 .blyrics-container[data-sync="richsync"] .blyrics--word {
-  backface-visibility: hidden;
   transition:
     scale 0.3s ease,
     translate 0.3s ease;
@@ -1067,8 +1075,7 @@ ytmusic-player-page:after {
   background-repeat: no-repeat;
   background-size: cover;
   filter: saturate(var(--blyrics-background-saturate)) brightness(var(--spicy-bg-brightness)) blur(var(--blyrics-background-blur)) hue-rotate(-12deg);
-  mix-blend-mode: screen;
-  opacity: 0.55;
+  opacity: 0.35;
   animation: spicy-bg-drift-b calc(var(--spicy-bg-duration) * 1.3) ease-in-out infinite alternate;
 }
 
@@ -1109,17 +1116,22 @@ ytmusic-player-page:has(> :is(#better-lyrics-kawarp-player, #better-lyrics-kawar
   animation: none;
 }
 
-/* Spicy runs the same Kawarp engine (warp 1, 8 blur passes, saturation 1.5)
-   and then puts saturate(2.5) brightness(0.65) on the canvas. Shaders has no
-   brightness option, so the same filter goes here. Pair this with the Shaders
-   settings file better-lyrics-shaders-spicy.json (opacity 1).
-   The container filter is cleared to prevent compounding with the canvas. */
-:is(#better-lyrics-kawarp-player, #better-lyrics-kawarp-homepage, #better-lyrics-kawarp-search, #better-lyrics-kawarp-player-page, #better-lyrics-kawarp-search-page) {
+/* Avoid CSS filter on the full-screen WebGL canvas: in Chromium GaneshGL
+   a canvas filter forces an extra full-resolution render pass every frame.
+   Saturation runs natively in WebGL via shader.json, and brightness is
+   matched with a lightweight dark overlay over the canvas. */
+:is(#better-lyrics-kawarp-player, #better-lyrics-kawarp-homepage, #better-lyrics-kawarp-search, #better-lyrics-kawarp-player-page, #better-lyrics-kawarp-search-page),
+:is(#better-lyrics-kawarp-player, #better-lyrics-kawarp-homepage, #better-lyrics-kawarp-search, #better-lyrics-kawarp-player-page, #better-lyrics-kawarp-search-page) canvas {
   filter: none !important;
 }
 
-:is(#better-lyrics-kawarp-player, #better-lyrics-kawarp-homepage, #better-lyrics-kawarp-search, #better-lyrics-kawarp-player-page, #better-lyrics-kawarp-search-page) canvas {
-  filter: saturate(var(--spicy-kawarp-saturate)) brightness(var(--spicy-kawarp-brightness)) !important;
+:is(#better-lyrics-kawarp-player, #better-lyrics-kawarp-homepage, #better-lyrics-kawarp-search, #better-lyrics-kawarp-player-page, #better-lyrics-kawarp-search-page)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: rgb(0 0 0 / calc(1 - var(--spicy-kawarp-brightness, 0.65)));
 }
 
 /* Shaders draws on the home and search pages too, so the CSS cover
@@ -1319,7 +1331,6 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
 
 /* the cover dims while the controls are shown */
 ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #player.ytmusic-player-page {
-  will-change: filter;
   transition: filter 0.3s ease;
 }
 
