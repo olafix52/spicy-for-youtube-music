@@ -449,9 +449,25 @@ $spicy-scroll-fade: false;
    3. Lines: dimming and blur by distance from the active line
    ------------------------------------------------------------------------ */
 
+/* Register per-line distance variables as non-inherited so changing blur level
+   or idle opacity on a .blyrics--line never cascades style recalculation down
+   into its word and letter spans during auto-scroll. */
+@property --spicy-level {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 4;
+}
+
+@property --spicy-line-idle-opacity {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0.76;
+}
+
 /* default: far away */
 .blyrics-container > :where(.blyrics--line) {
   --spicy-level: 4;
+  --spicy-line-idle-opacity: var(--spicy-upcoming-line-opacity);
   contain: layout style;
   transition:
     opacity var(--spicy-line-transition),
@@ -461,7 +477,7 @@ $spicy-scroll-fade: false;
 /* Smooth blur transition only for lines entering or leaving the immediate focal zone */
 .blyrics-container > :where(
   .blyrics--active,
-  .blyrics--animating:has(~ .blyrics--active),
+  .blyrics--animating:has(+ .blyrics--line + .blyrics--active),
   .blyrics--line:has(+ .blyrics--active),
   .blyrics--active + .blyrics--line
 ) {
@@ -471,31 +487,45 @@ $spicy-scroll-fade: false;
     text-shadow 0.3s ease;
 }
 
-.blyrics-container > :where(
-  .blyrics--active + .blyrics--line + .blyrics--line + .blyrics--line,
-  .blyrics--line:has(+ .blyrics--line + .blyrics--line + .blyrics--active)
-) {
+/* Distance levels 3 -> 2 -> 1 -> 0. Visible sung lines immediately above the
+   active one (-1 to -3) also receive sung opacity here, keeping sibling checks
+   bounded instead of using an unbounded ~ selector that would restyle every
+   trailing line in the song on each line advance. */
+.blyrics-container > :where(.blyrics--active + .blyrics--line + .blyrics--line + .blyrics--line) {
   --spicy-level: 3;
 }
 
-.blyrics-container > :where(
-  .blyrics--active + .blyrics--line + .blyrics--line,
-  .blyrics--line:has(+ .blyrics--line + .blyrics--active)
-) {
+.blyrics-container > :where(.blyrics--line:has(+ .blyrics--line + .blyrics--line + .blyrics--active)) {
+  --spicy-level: 3;
+  --spicy-line-idle-opacity: var(--spicy-sung-line-opacity);
+}
+
+.blyrics-container > :where(.blyrics--active + .blyrics--line + .blyrics--line) {
   --spicy-level: 2;
 }
 
-.blyrics-container > :where(
-  .blyrics--active + .blyrics--line,
-  .blyrics--line:has(+ .blyrics--active)
-) {
+.blyrics-container > :where(.blyrics--line:has(+ .blyrics--line + .blyrics--active)) {
+  --spicy-level: 2;
+  --spicy-line-idle-opacity: var(--spicy-sung-line-opacity);
+}
+
+.blyrics-container > :where(.blyrics--active + .blyrics--line) {
   --spicy-level: 1;
 }
 
-/* the active line and any earlier line still being sung stay sharp.
+.blyrics-container > :where(.blyrics--line:has(+ .blyrics--active)) {
+  --spicy-level: 1;
+  --spicy-line-idle-opacity: var(--spicy-sung-line-opacity);
+}
+
+/* the active line and up to two preceding lines still being sung stay sharp.
    The engine marks lines as animating up to 2s before they start, so only
    animating lines above the active one count, not the ones coming up. */
-.blyrics-container > :where(.blyrics--active, .blyrics--animating:has(~ .blyrics--active)) {
+.blyrics-container > :where(
+  .blyrics--active,
+  .blyrics--animating:has(+ .blyrics--active),
+  .blyrics--animating:has(+ .blyrics--line + .blyrics--active)
+) {
   --spicy-level: 0;
 }
 
@@ -505,18 +535,12 @@ $spicy-scroll-fade: false;
   opacity: calc(1 - (1 - var(--spicy-line-idle-opacity)) * clamp(0, var(--spicy-level), 1));
 }
 
-.blyrics-container:is([data-sync="richsync"], [data-sync="synced"]) > .blyrics--line:where(.blyrics--active, .blyrics--animating:has(~ .blyrics--active)) {
+.blyrics-container:is([data-sync="richsync"], [data-sync="synced"]) > .blyrics--line:where(
+  .blyrics--active,
+  .blyrics--animating:has(+ .blyrics--active),
+  .blyrics--animating:has(+ .blyrics--line + .blyrics--active)
+) {
   filter: none;
-}
-
-/* sung lines (above the active one) and coming lines (after it) get their
-   own level, with a plain sibling selector instead of :has() */
-.blyrics-container > .blyrics--line {
-  --spicy-line-idle-opacity: var(--spicy-sung-line-opacity);
-}
-
-.blyrics-container > .blyrics--active ~ .blyrics--line {
-  --spicy-line-idle-opacity: var(--spicy-upcoming-line-opacity);
 }
 
 /* hover: sharp and fully visible, like Spicy. Spicy's text reads about
@@ -660,7 +684,7 @@ $spicy-scroll-fade: false;
    that split Chromium compositor layers during manual scrolling. Word transitions
    stay scoped to the active/animating zone so entering +2 does not spawn scale
    animations on every line advance. */
-.blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) .blyrics--word {
+.blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating) .blyrics--word {
   transition:
     scale 0.3s ease,
     translate 0.3s ease;
@@ -671,7 +695,7 @@ $spicy-scroll-fade: false;
   translate: 0 var(--spicy-word-rest-y);
 }
 
-.blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) .blyrics--word:not([data-word-state="upcoming"]) {
+.blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating) .blyrics--word:not([data-word-state="upcoming"]) {
   --spicy-lift-rise: clamp(var(--spicy-word-rise-min), calc(var(--blyrics-duration, 300ms) + var(--spicy-word-rise-extra)), 100s);
   --spicy-scale-rise: calc(var(--spicy-lift-rise) + var(--spicy-word-scale-lag));
   animation:
@@ -820,7 +844,7 @@ $spicy-scroll-fade: false;
     translate: 0 var(--spicy-letter-rest-y);
   }
 
-  .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) :is(.blyrics--word[data-long-word], .blyrics--word[data-long-word] .blyrics-sweep-text) > .blyrics--letter {
+  .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating) :is(.blyrics--word[data-long-word], .blyrics--word[data-long-word] .blyrics-sweep-text) > .blyrics--letter {
     scale: var(--spicy-letter-rest-scale);
     translate: 0 var(--spicy-letter-rest-y);
   }
@@ -832,7 +856,7 @@ $spicy-scroll-fade: false;
      skip a frame. The sung
      spring holds normal size until the line moves out of this range, where
      letters are at normal size anyway. */
-  .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) :is(.blyrics--word[data-long-word]:not([data-word-state="upcoming"]), .blyrics--word[data-long-word]:not([data-word-state="upcoming"]) .blyrics-sweep-text) > .blyrics--letter {
+  .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating) :is(.blyrics--word[data-long-word]:not([data-word-state="upcoming"]), .blyrics--word[data-long-word]:not([data-word-state="upcoming"]) .blyrics-sweep-text) > .blyrics--letter {
     --spicy-letter-slot: calc(var(--blyrics-duration, 1000ms) / var(--letters, 1));
     --spicy-letter-x: calc((var(--spicy-letter-i, 0) - (var(--letters, 1) - 1) / 2) * var(--spicy-letter-spread));
     animation:
@@ -841,7 +865,7 @@ $spicy-scroll-fade: false;
   }
 
   /* RTL letters sit right-to-left in DOM order, so reverse the horizontal spread */
-  .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) :is(.blyrics--word.blyrics-rtl[data-long-word]:not([data-word-state="upcoming"]), .blyrics--word.blyrics-rtl[data-long-word]:not([data-word-state="upcoming"]) .blyrics-sweep-text) > .blyrics--letter {
+  .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating) :is(.blyrics--word.blyrics-rtl[data-long-word]:not([data-word-state="upcoming"]), .blyrics--word.blyrics-rtl[data-long-word]:not([data-word-state="upcoming"]) .blyrics-sweep-text) > .blyrics--letter {
     --spicy-letter-x: calc(((var(--letters, 1) - 1) / 2 - var(--spicy-letter-i, 0)) * var(--spicy-letter-spread));
   }
 }
