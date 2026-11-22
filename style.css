@@ -30,6 +30,10 @@ blyrics-line-scroll-below-duration = 700ms;
 /* ---------------------------------------------------------------------------
    1. Tunables
    ------------------------------------------------------------------------ */
+/* glass surface preset: "frosted" (default, matte dark frost without edge glare)
+   or "liquid" (glossy refraction with specular edge highlights) */
+$spicy-glass-style: frosted;
+
 :root {
   /* global lyrics size multiplier (0.6 to 2.0, matching Spicy 6.5.0 --SL-LyricsScale) */
   --spicy-lyrics-scale: 1;
@@ -112,20 +116,11 @@ blyrics-line-scroll-below-duration = 700ms;
   --spicy-video-shadow:
     0 24px 56px -12px rgb(0 0 0 / 0.58),
     0 10px 24px -6px rgb(0 0 0 / 0.42);
-  --spicy-video-rim:
-    inset 0 0 0 1px rgb(255 255 255 / 0.12),
-    inset 0 1px 0 rgb(255 255 255 / 0.2);
 
   /* side-panel queue */
   --spicy-queue-item-radius: 12px;
   --spicy-queue-thumb-radius: 7px;
   --spicy-queue-played-opacity: 0.55;
-  --spicy-glass-card-active-bg: rgb(255 255 255 / 0.12);
-  --spicy-glass-card-active-hover-bg: rgb(255 255 255 / 0.17);
-  --spicy-glass-card-active-shadow:
-    0 8px 20px -10px rgb(0 0 0 / 0.45),
-    inset 0 1px 0 rgb(255 255 255 / 0.22),
-    inset 0 0 0 1px rgb(255 255 255 / 0.14);
 
   /* picture-in-picture / spicy popup lyrics */
   --spicy-pip-artwork-radius: clamp(10px, 3vw, 16px);
@@ -153,11 +148,139 @@ blyrics-line-scroll-below-duration = 700ms;
   --spicy-page-bg-brightness: 30%;
   --spicy-page-bg-blur: 120px;
   --spicy-page-bg-duration: 90s;
-  --spicy-glass: rgb(0 0 0 / 0.35);
   --spicy-glass-blur: 18px;
   --spicy-tile-radius: 10px;
   --spicy-progress-color: rgb(255 255 255 / 0.85);
   --spicy-progress-track: rgb(255 255 255 / 0.2);
+
+  /* glass surface tokens controlled by $spicy-glass-style above */
+  @if $spicy-glass-style == liquid or $spicy-glass-style == "liquid" {
+    /* Liquid Glass preset: glossy refraction and specular edge highlights */
+    --spicy-glass: rgb(0 0 0 / 0.35);
+    --spicy-glass-bar-filter: blur(var(--spicy-glass-blur)) saturate(1.6);
+
+    --spicy-video-rim:
+      inset 0 0 0 1px rgb(255 255 255 / 0.12),
+      inset 0 1px 0 rgb(255 255 255 / 0.2);
+
+    --spicy-glass-card-active-bg: rgb(255 255 255 / 0.12);
+    --spicy-glass-card-active-hover-bg: rgb(255 255 255 / 0.17);
+    --spicy-glass-card-active-shadow:
+      0 8px 20px -10px rgb(0 0 0 / 0.45),
+      inset 0 1px 0 rgb(255 255 255 / 0.22),
+      inset 0 0 0 1px rgb(255 255 255 / 0.14);
+
+    --spicy-capsule-bg: rgba(255, 255, 255, 0.08);
+    --spicy-capsule-hover-bg: rgba(255, 255, 255, 0.12);
+    --spicy-capsule-filter: blur(24px) contrast(0.6) brightness(0.8) saturate(1.8);
+    --spicy-capsule-shadow:
+      0 12px 28px -12px rgba(8, 10, 18, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.22),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    --spicy-capsule-hover-shadow:
+      0 12px 28px -12px rgba(8, 10, 18, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.32),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+
+    --spicy-menu-bg: rgba(20, 20, 24, 0.76);
+    --spicy-menu-filter: blur(24px) saturate(1.7) brightness(1.06);
+    --spicy-menu-shadow:
+      0 16px 40px -8px rgba(8, 10, 18, 0.55),
+      0 4px 12px -2px rgba(8, 10, 18, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.38),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+    --spicy-menu-item-active-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+
+    --spicy-slider-bg: rgba(0, 0, 0, 0.22);
+    --spicy-slider-filter: blur(12px) saturate(1.6) brightness(1.05);
+    --spicy-slider-shadow:
+      0 6px 18px -8px rgba(8, 10, 18, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.36),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.18);
+
+    --spicy-chip-bg: rgb(255 255 255 / 0.09);
+    --spicy-chip-hover-bg: rgb(255 255 255 / 0.16);
+    --spicy-chip-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.16),
+      inset 0 0 0 1px rgb(255 255 255 / 0.1),
+      0 2px 6px rgb(0 0 0 / 0.14);
+    --spicy-chip-hover-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.24),
+      inset 0 0 0 1px rgb(255 255 255 / 0.18),
+      0 4px 12px rgb(0 0 0 / 0.2);
+    --spicy-chip-selected-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.45),
+      0 2px 8px rgb(0 0 0 / 0.24);
+
+    --spicy-control-bg: rgb(255 255 255 / 0.12);
+    --spicy-control-hover-bg: rgb(255 255 255 / 0.18);
+    --spicy-control-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.22),
+      inset 0 0 0 1px rgb(255 255 255 / 0.12),
+      0 4px 12px rgb(0 0 0 / 0.24);
+    --spicy-control-hover-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.3),
+      inset 0 0 0 1px rgb(255 255 255 / 0.18),
+      0 4px 14px rgb(0 0 0 / 0.28);
+  } @else {
+    /* Frosted Glass preset (default): matte dark frost, uniform hairline, no specular glare */
+    --spicy-glass: rgb(18 20 26 / 0.56);
+    --spicy-glass-bar-filter: blur(var(--spicy-glass-blur)) saturate(1.15);
+
+    --spicy-video-rim: inset 0 0 0 1px rgb(255 255 255 / 0.09);
+
+    --spicy-glass-card-active-bg: rgb(255 255 255 / 0.09);
+    --spicy-glass-card-active-hover-bg: rgb(255 255 255 / 0.14);
+    --spicy-glass-card-active-shadow:
+      0 6px 16px -8px rgb(0 0 0 / 0.36),
+      inset 0 0 0 1px rgb(255 255 255 / 0.1);
+
+    --spicy-capsule-bg: rgb(18 20 26 / 0.56);
+    --spicy-capsule-hover-bg: rgb(28 30 38 / 0.66);
+    --spicy-capsule-filter: blur(20px) saturate(1.25);
+    --spicy-capsule-shadow:
+      0 8px 20px -10px rgb(0 0 0 / 0.4),
+      inset 0 0 0 1px rgb(255 255 255 / 0.1);
+    --spicy-capsule-hover-shadow:
+      0 10px 24px -10px rgb(0 0 0 / 0.46),
+      inset 0 0 0 1px rgb(255 255 255 / 0.16);
+
+    --spicy-menu-bg: rgb(18 20 26 / 0.84);
+    --spicy-menu-filter: blur(20px) saturate(1.2);
+    --spicy-menu-shadow:
+      0 14px 34px -10px rgb(0 0 0 / 0.52),
+      inset 0 0 0 1px rgb(255 255 255 / 0.1);
+    --spicy-menu-item-active-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.14);
+
+    --spicy-slider-bg: rgb(18 20 26 / 0.46);
+    --spicy-slider-filter: blur(10px) saturate(1.2);
+    --spicy-slider-shadow:
+      0 4px 14px -8px rgb(0 0 0 / 0.32),
+      inset 0 0 0 1px rgb(255 255 255 / 0.12);
+
+    --spicy-chip-bg: rgb(255 255 255 / 0.08);
+    --spicy-chip-hover-bg: rgb(255 255 255 / 0.14);
+    --spicy-chip-shadow:
+      inset 0 0 0 1px rgb(255 255 255 / 0.09),
+      0 2px 6px rgb(0 0 0 / 0.12);
+    --spicy-chip-hover-shadow:
+      inset 0 0 0 1px rgb(255 255 255 / 0.16),
+      0 3px 10px rgb(0 0 0 / 0.18);
+    --spicy-chip-selected-shadow:
+      inset 0 0 0 1px rgb(255 255 255 / 0.2),
+      0 2px 8px rgb(0 0 0 / 0.22);
+
+    --spicy-control-bg: rgb(255 255 255 / 0.09);
+    --spicy-control-hover-bg: rgb(255 255 255 / 0.15);
+    --spicy-control-shadow:
+      inset 0 0 0 1px rgb(255 255 255 / 0.1),
+      0 3px 10px rgb(0 0 0 / 0.2);
+    --spicy-control-hover-shadow:
+      inset 0 0 0 1px rgb(255 255 255 / 0.18),
+      0 4px 12px rgb(0 0 0 / 0.26);
+  }
 
   /* ---- Better Lyrics variables ---- */
 
@@ -1195,14 +1318,10 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
   height: clamp(9px, calc(var(--spicy-fs-art-size) * 0.024), 16px);
   border-radius: 999px;
   overflow: hidden;
-  background: rgba(0, 0, 0, 0.22);
-  backdrop-filter: blur(12px) saturate(1.6) brightness(1.05);
-  -webkit-backdrop-filter: blur(12px) saturate(1.6) brightness(1.05);
-  box-shadow:
-    0 6px 18px -8px rgba(8, 10, 18, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.36),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.16),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.18);
+  background: var(--spicy-slider-bg);
+  backdrop-filter: var(--spicy-slider-filter);
+  -webkit-backdrop-filter: var(--spicy-slider-filter);
+  box-shadow: var(--spicy-slider-shadow);
   transform-origin: center;
   transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
@@ -1794,7 +1913,7 @@ ytmusic-browse-response #contents {
 /* top bar (shows up after scrolling) and the collapsed side bar: glass */
 #layout:not([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"]) :is(#nav-bar-background, #mini-guide-background) {
   background: var(--spicy-glass) !important;
-  backdrop-filter: blur(var(--spicy-glass-blur)) saturate(1.6);
+  backdrop-filter: var(--spicy-glass-bar-filter);
   border: none !important;
 }
 
@@ -1836,7 +1955,7 @@ ytmusic-app-layout.content-scrolled :is(#mini-guide-background, #nav-bar-divider
   pointer-events: none;
   transform: translateZ(0);
   background: var(--spicy-glass);
-  backdrop-filter: blur(var(--spicy-glass-blur)) saturate(1.6);
+  backdrop-filter: var(--spicy-glass-bar-filter);
 }
 
 /* same font as the lyrics. YouTube Music sets "YouTube Sans" and Roboto
@@ -1951,30 +2070,22 @@ ytmusic-chip-cloud-chip-renderer a {
 }
 
 ytmusic-chip-cloud-chip-renderer:not([is-selected]) a {
-  background: rgb(255 255 255 / 0.09) !important;
+  background: var(--spicy-chip-bg) !important;
   color: rgb(255 255 255 / 0.82) !important;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.16),
-    inset 0 0 0 1px rgb(255 255 255 / 0.1),
-    0 2px 6px rgb(0 0 0 / 0.14) !important;
+  box-shadow: var(--spicy-chip-shadow) !important;
 }
 
 ytmusic-chip-cloud-chip-renderer:not([is-selected]) a:hover {
-  background: rgb(255 255 255 / 0.16) !important;
+  background: var(--spicy-chip-hover-bg) !important;
   color: #fff !important;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.24),
-    inset 0 0 0 1px rgb(255 255 255 / 0.18),
-    0 4px 12px rgb(0 0 0 / 0.2) !important;
+  box-shadow: var(--spicy-chip-hover-shadow) !important;
 }
 
 ytmusic-chip-cloud-chip-renderer[is-selected] a {
   background: rgb(255 255 255 / 0.9) !important;
   color: #0a0c12 !important;
   font-weight: 600;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.45),
-    0 2px 8px rgb(0 0 0 / 0.24) !important;
+  box-shadow: var(--spicy-chip-selected-shadow) !important;
 }
 
 ytmusic-chip-cloud-chip-renderer a:active {
@@ -2007,7 +2118,7 @@ ytmusic-chip-cloud-renderer iron-selector::-webkit-scrollbar {
    ------------------------------------------------------------------------ */
 #player-bar-background {
   background: var(--spicy-glass) !important;
-  backdrop-filter: blur(var(--spicy-glass-blur)) saturate(1.6);
+  backdrop-filter: var(--spicy-glass-bar-filter);
   border-top: 1px solid rgb(255 255 255 / 0.08) !important;
 }
 
@@ -2629,13 +2740,10 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
   padding: 10px 22px !important;
   border: none !important;
   border-radius: 999px !important;
-  background: rgba(255, 255, 255, 0.08) !important;
-  -webkit-backdrop-filter: blur(24px) contrast(0.6) brightness(0.8) saturate(1.8) !important;
-  backdrop-filter: blur(24px) contrast(0.6) brightness(0.8) saturate(1.8) !important;
-  box-shadow:
-    0 12px 28px -12px rgba(8, 10, 18, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+  background: var(--spicy-capsule-bg) !important;
+  -webkit-backdrop-filter: var(--spicy-capsule-filter) !important;
+  backdrop-filter: var(--spicy-capsule-filter) !important;
+  box-shadow: var(--spicy-capsule-shadow) !important;
   text-shadow: none !important;
   transition:
     opacity 0.15s linear 50ms,
@@ -2658,12 +2766,9 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 
 .autoscroll-resume-button:hover {
   color: #fff !important;
-  background: rgba(255, 255, 255, 0.1) !important;
+  background: var(--spicy-capsule-hover-bg) !important;
   text-shadow: none !important;
-  box-shadow:
-    0 12px 28px -12px rgba(8, 10, 18, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.32),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.16) !important;
+  box-shadow: var(--spicy-capsule-hover-shadow) !important;
 }
 
 .autoscroll-resume-button:hover::before {
@@ -2686,13 +2791,10 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 .blyrics-dock__inner {
   border-radius: 999px !important;
   padding: 6px 10px !important;
-  background: rgba(255, 255, 255, 0.08) !important;
-  -webkit-backdrop-filter: blur(24px) contrast(0.6) brightness(0.8) saturate(1.8) !important;
-  backdrop-filter: blur(24px) contrast(0.6) brightness(0.8) saturate(1.8) !important;
-  box-shadow:
-    0 12px 28px -12px rgba(8, 10, 18, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+  background: var(--spicy-capsule-bg) !important;
+  -webkit-backdrop-filter: var(--spicy-capsule-filter) !important;
+  backdrop-filter: var(--spicy-capsule-filter) !important;
+  box-shadow: var(--spicy-capsule-shadow) !important;
   transition:
     transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
@@ -2703,11 +2805,8 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 }
 
 .blyrics-dock__inner:hover {
-  background: rgba(255, 255, 255, 0.12) !important;
-  box-shadow:
-    0 12px 28px -12px rgba(8, 10, 18, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.32),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.16) !important;
+  background: var(--spicy-capsule-hover-bg) !important;
+  box-shadow: var(--spicy-capsule-hover-shadow) !important;
 }
 
 /* Smoothly interpolate source label to its exact text width (max-content)
@@ -2785,15 +2884,10 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
   padding: 6px !important;
   margin-bottom: 18px !important;
   margin-top: 18px !important;
-  background: rgba(20, 20, 24, 0.76) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(1.7) brightness(1.06) !important;
-  backdrop-filter: blur(24px) saturate(1.7) brightness(1.06) !important;
-  box-shadow:
-    0 16px 40px -8px rgba(8, 10, 18, 0.55),
-    0 4px 12px -2px rgba(8, 10, 18, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.38),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.2) !important;
+  background: var(--spicy-menu-bg) !important;
+  -webkit-backdrop-filter: var(--spicy-menu-filter) !important;
+  backdrop-filter: var(--spicy-menu-filter) !important;
+  box-shadow: var(--spicy-menu-shadow) !important;
 }
 
 /* Symmetrical alignment covering cycle controls (< >) */
@@ -2821,7 +2915,7 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 .blyrics-dock__menu-item--active {
   color: #fff !important;
   background: rgba(255, 255, 255, 0.16) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+  box-shadow: var(--spicy-menu-item-active-shadow) !important;
 }
 
 /* ---------------------------------------------------------------------------
@@ -2844,13 +2938,10 @@ ytmusic-player-page #side-panel tp-yt-paper-tabs.tab-header-container {
   padding: 4px 6.85px 4px 5.15px !important;
   border-bottom: none !important;
   border-radius: 999px !important;
-  background: rgba(255, 255, 255, 0.08) !important;
-  -webkit-backdrop-filter: blur(24px) contrast(0.6) brightness(0.8) saturate(1.8) !important;
-  backdrop-filter: blur(24px) contrast(0.6) brightness(0.8) saturate(1.8) !important;
-  box-shadow:
-    0 12px 28px -12px rgba(8, 10, 18, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+  background: var(--spicy-capsule-bg) !important;
+  -webkit-backdrop-filter: var(--spicy-capsule-filter) !important;
+  backdrop-filter: var(--spicy-capsule-filter) !important;
+  box-shadow: var(--spicy-capsule-shadow) !important;
   overflow: visible !important;
 }
 
@@ -3072,12 +3163,9 @@ ytmusic-player-page #side-panel ytmusic-queue-header-renderer .subtitle {
 ytmusic-player-page #side-panel ytmusic-queue-header-renderer #buttons :is(button, a.yt-spec-button-shape-next) {
   border-radius: 999px !important;
   border: none !important;
-  background: rgb(255 255 255 / 0.12) !important;
+  background: var(--spicy-control-bg) !important;
   color: #fff !important;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.22),
-    inset 0 0 0 1px rgb(255 255 255 / 0.12),
-    0 4px 12px rgb(0 0 0 / 0.24) !important;
+  box-shadow: var(--spicy-control-shadow) !important;
   transition:
     background-color 0.2s ease,
     box-shadow 0.2s ease,
@@ -3085,11 +3173,8 @@ ytmusic-player-page #side-panel ytmusic-queue-header-renderer #buttons :is(butto
 }
 
 ytmusic-player-page #side-panel ytmusic-queue-header-renderer #buttons :is(button, a.yt-spec-button-shape-next):hover {
-  background: rgb(255 255 255 / 0.18) !important;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.3),
-    inset 0 0 0 1px rgb(255 255 255 / 0.18),
-    0 4px 14px rgb(0 0 0 / 0.28) !important;
+  background: var(--spicy-control-hover-bg) !important;
+  box-shadow: var(--spicy-control-hover-shadow) !important;
 }
 
 ytmusic-player-page #side-panel ytmusic-queue-header-renderer #buttons :is(button, a.yt-spec-button-shape-next):active {
@@ -3258,13 +3343,10 @@ ytmusic-player-page #side-panel ytmusic-carousel-shelf-basic-header-renderer :is
 /* Liquid Glass carousel navigation arrows (< >) */
 ytmusic-player-page #side-panel :is(#previous-items-button, #next-items-button, .previous-items-button, .next-items-button) {
   border-radius: 999px !important;
-  background: rgb(255 255 255 / 0.11) !important;
+  background: var(--spicy-control-bg) !important;
   border: none !important;
   color: rgb(255 255 255 / 0.85) !important;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.2),
-    inset 0 0 0 1px rgb(255 255 255 / 0.12),
-    0 4px 12px rgb(0 0 0 / 0.24) !important;
+  box-shadow: var(--spicy-control-shadow) !important;
   transition:
     background-color 0.2s ease,
     box-shadow 0.2s ease,
@@ -3273,12 +3355,9 @@ ytmusic-player-page #side-panel :is(#previous-items-button, #next-items-button, 
 }
 
 ytmusic-player-page #side-panel :is(#previous-items-button, #next-items-button, .previous-items-button, .next-items-button):not([disabled]):hover {
-  background: rgb(255 255 255 / 0.18) !important;
+  background: var(--spicy-control-hover-bg) !important;
   color: #fff !important;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.28),
-    inset 0 0 0 1px rgb(255 255 255 / 0.2),
-    0 4px 14px rgb(0 0 0 / 0.28) !important;
+  box-shadow: var(--spicy-control-hover-shadow) !important;
 }
 
 ytmusic-player-page #side-panel :is(#previous-items-button, #next-items-button, .previous-items-button, .next-items-button):not([disabled]):active {

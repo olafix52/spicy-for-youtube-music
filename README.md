@@ -14,7 +14,7 @@ See [DESCRIPTION.md](DESCRIPTION.md) for the full feature list.
 
 ## Tuning
 
-Open `style.css` and edit the **Tunables** block at the top.
+Open `style.css` and edit the **Tunables** block at the top. Switch `$spicy-glass-style` between `frosted` (default) and `liquid` to toggle matte vs. glossy specular glass.
 
 ## License
 
