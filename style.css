@@ -107,9 +107,8 @@ $spicy-style-side-tabs: true;
   /* animated background */
   --spicy-bg-duration: 45s;
   --spicy-bg-brightness: 45%;
-  /* Better Lyrics Shaders (Kawarp) dim level (0 to 1, lower is darker;
-     saturation lives natively in shader.json to avoid a full-screen CSS
-     filter pass over the WebGL canvas in Chromium) */
+  /* Better Lyrics Shaders (Kawarp) background, values from Spicy */
+  --spicy-kawarp-saturate: 2.5;
   --spicy-kawarp-brightness: 0.65;
 
   /* word bounce, simulated from Spicy's LyricsAnimator.ts + Spring.ts:
@@ -1241,22 +1240,17 @@ ytmusic-player-page:has(> :is(#better-lyrics-kawarp-player, #better-lyrics-kawar
   animation: none;
 }
 
-/* Avoid CSS filter on the full-screen WebGL canvas: in Chromium GaneshGL
-   a canvas filter forces an extra full-resolution render pass every frame.
-   Saturation runs natively in WebGL via shader.json, and brightness is
-   matched with a lightweight dark overlay over the canvas. */
-:is(#better-lyrics-kawarp-player, #better-lyrics-kawarp-homepage, #better-lyrics-kawarp-search, #better-lyrics-kawarp-player-page, #better-lyrics-kawarp-search-page),
-:is(#better-lyrics-kawarp-player, #better-lyrics-kawarp-homepage, #better-lyrics-kawarp-search, #better-lyrics-kawarp-player-page, #better-lyrics-kawarp-search-page) canvas {
+/* Spicy runs the same Kawarp engine (warp 1, 8 blur passes, saturation 1.5)
+   and then puts saturate(2.5) brightness(0.65) on the canvas. Shaders has no
+   brightness option, so the same filter goes here. Pair this with the Shaders
+   settings file better-lyrics-shaders-spicy.json (opacity 1).
+   The container filter is cleared to prevent compounding with the canvas. */
+:is(#better-lyrics-kawarp-player, #better-lyrics-kawarp-homepage, #better-lyrics-kawarp-search, #better-lyrics-kawarp-player-page, #better-lyrics-kawarp-search-page) {
   filter: none !important;
 }
 
-:is(#better-lyrics-kawarp-player, #better-lyrics-kawarp-homepage, #better-lyrics-kawarp-search, #better-lyrics-kawarp-player-page, #better-lyrics-kawarp-search-page)::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: rgb(0 0 0 / calc(1 - var(--spicy-kawarp-brightness, 0.65)));
+:is(#better-lyrics-kawarp-player, #better-lyrics-kawarp-homepage, #better-lyrics-kawarp-search, #better-lyrics-kawarp-player-page, #better-lyrics-kawarp-search-page) canvas {
+  filter: saturate(var(--spicy-kawarp-saturate)) brightness(var(--spicy-kawarp-brightness)) !important;
 }
 
 /* Shaders draws on the home and search pages too, so the CSS cover
