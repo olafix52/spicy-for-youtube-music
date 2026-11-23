@@ -820,10 +820,11 @@ $spicy-scroll-fade: false;
    so up to 8 (Spicy's own check is time per syllable). Style queries read the letter
    count the engine writes on each word. */
 @container style(--letters: 1) or style(--letters: 2) or style(--letters: 3) or style(--letters: 4) or style(--letters: 5) or style(--letters: 6) or style(--letters: 7) or style(--letters: 8) {
-  /* letters of a held syllable rest small and low until it is sung, in all
-     lines like the words above; around the line being sung they also rest
-     there once sung, under the sung spring that lifts them to normal */
-  .blyrics-container[data-sync="richsync"] :is(.blyrics--word[data-long-word]:not([data-word-state="past"]), .blyrics--word[data-long-word]:not([data-word-state="past"]) .blyrics-sweep-text) > .blyrics--letter {
+  /* Keep resting letter scale/lift on the active, animating, and next two
+     upcoming lines (matching the word rule above), avoiding hundreds of idle
+     TransformNodes across offscreen lines while still letting letters settle
+     to normal size under the sung spring. */
+  .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, .blyrics--active + .blyrics--line, .blyrics--active + .blyrics--line + .blyrics--line) :is(.blyrics--word[data-long-word]:not([data-word-state="past"]), .blyrics--word[data-long-word]:not([data-word-state="past"]) .blyrics-sweep-text) > .blyrics--letter {
     scale: var(--spicy-letter-rest-scale);
     translate: 0 var(--spicy-letter-rest-y);
   }
@@ -1007,7 +1008,6 @@ $spicy-scroll-fade: false;
   height: calc(var(--blyrics-font-size) * 1.4);
   margin-left: 0;
   transform-origin: left center;
-  backface-visibility: hidden;
 }
 
 .blyrics--instrumental[data-agent="v2"] .blyrics--instrumental-icon,
@@ -1182,7 +1182,6 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
   overflow: hidden;
   opacity: 0.95;
   box-shadow: 0 9px 20px 0 rgb(0 0 0 / 0.271) !important;
-  backface-visibility: hidden;
 }
 
 /* make the YouTube Music artwork fill the whole cover box */
@@ -1306,7 +1305,7 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]) #blyrics-song-info #
   transition: opacity 0.3s ease;
 }
 
-#layout[player-fullscreened]:not([blyrics-dfs]) .blyrics-dock:hover {
+#layout[player-fullscreened]:not([blyrics-dfs]) .blyrics-dock:is(:hover, :focus-within) {
   opacity: 1;
 }
 
@@ -1392,16 +1391,27 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
   font-size: calc(var(--spicy-fs-art-size) * 0.024);
 }
 
-/* New SliderBar Styling: glass capsule progress bar from Spicy Lyrics */
+/* New SliderBar Styling: glass capsule progress bar from Spicy Lyrics.
+   Keep backdrop-filter off while the fullscreen overlay rests at opacity 0,
+   delaying turn-off until fade-out ends so blur never pops mid-fade. */
 ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls .blyrics-progress__bar {
   height: clamp(9px, calc(var(--spicy-fs-art-size) * 0.024), 16px);
   border-radius: 999px;
   overflow: hidden;
   background: var(--spicy-slider-bg);
-  backdrop-filter: var(--spicy-slider-filter);
-  -webkit-backdrop-filter: var(--spicy-slider-filter);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   box-shadow: var(--spicy-slider-shadow);
   transform-origin: center;
+  transition:
+    transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+    -webkit-backdrop-filter 0s linear 0.3s,
+    backdrop-filter 0s linear 0.3s;
+}
+
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #main-panel:has(#player:hover, #blyrics-fs-controls:hover) #blyrics-fs-controls .blyrics-progress__bar {
+  -webkit-backdrop-filter: var(--spicy-slider-filter);
+  backdrop-filter: var(--spicy-slider-filter);
   transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -1729,6 +1739,9 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
 
   ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #blyrics-fs-controls .blyrics-progress__bar {
     height: clamp(8px, calc(var(--spicy-fs-art-size) * 0.016), 12px) !important;
+    -webkit-backdrop-filter: var(--spicy-slider-filter);
+    backdrop-filter: var(--spicy-slider-filter);
+    transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #blyrics-fs-controls .blyrics-progress__times {
@@ -1860,6 +1873,12 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
       width 0.35s cubic-bezier(0.22, 1, 0.36, 1) !important;
   }
 
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #main-panel:has(#player:hover, #blyrics-fs-controls:hover, #player:focus-visible) #blyrics-fs-controls .blyrics-progress__bar {
+    -webkit-backdrop-filter: var(--spicy-slider-filter);
+    backdrop-filter: var(--spicy-slider-filter);
+    transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
   ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #side-panel.ytmusic-player-page {
     width: 100% !important;
     max-width: 100% !important;
@@ -1882,23 +1901,19 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
 ytmusic-player-page:is([blyrics-video-mode], [video-mode]):not([player-ui-state="MINIPLAYER"]):not([blyrics-dfs]):not([blyrics-karaoke]) #player.ytmusic-player-page {
   position: relative;
   border-radius: var(--spicy-video-radius) !important;
-  overflow: hidden !important;
+  overflow: clip !important;
   isolation: isolate;
-  transform: translateZ(0);
-  backface-visibility: hidden;
   box-shadow: var(--spicy-video-shadow) !important;
 }
 
-/* clip hardware-accelerated video layers cleanly inside the rounded frame
-   (mask-image lives on the inner player so box-shadow on #player stays intact) */
+/* clip hardware-accelerated video layers cleanly inside the rounded frame via a
+   compositor RRect clip node rather than 4 nested mask render surfaces */
 ytmusic-player-page:is([blyrics-video-mode], [video-mode]):not([player-ui-state="MINIPLAYER"]):not([blyrics-dfs]):not([blyrics-karaoke]) #player.ytmusic-player-page :is(ytmusic-player, #song-media-window, #movie_player, .html5-video-player, .html5-video-container, video.html5-main-video) {
   border-radius: var(--spicy-video-radius) !important;
 }
 
 ytmusic-player-page:is([blyrics-video-mode], [video-mode]):not([player-ui-state="MINIPLAYER"]):not([blyrics-dfs]):not([blyrics-karaoke]) #player.ytmusic-player-page :is(ytmusic-player, #song-media-window, #movie_player, .html5-video-player) {
-  overflow: hidden !important;
-  -webkit-mask-image: radial-gradient(#fff, #fff);
-  mask-image: radial-gradient(#fff, #fff);
+  overflow: clip !important;
 }
 
 /* subtle Liquid Glass edge and top specular highlight over dark frames */
@@ -2238,8 +2253,7 @@ ytmusic-player-bar:hover #progress-bar.ytmusic-player-bar {
   --paper-progress-active-color: #fff !important;
 }
 
-#progress-bar.ytmusic-player-bar #primaryProgress,
-#progress-bar.ytmusic-player-bar [id*="primaryProgress"] {
+#progress-bar.ytmusic-player-bar #primaryProgress {
   background: var(--spicy-progress-color) !important;
 }
 
@@ -2872,6 +2886,19 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
   scale: 0.95;
 }
 
+.autoscroll-resume-button[autoscroll-hidden="true"] {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  transition:
+    opacity 0.15s linear 50ms,
+    transform 0.25s cubic-bezier(0.23, 1, 0.32, 1),
+    background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+    scale 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+    -webkit-backdrop-filter 0s linear 0.2s,
+    backdrop-filter 0s linear 0.2s !important;
+}
+
 /* Controls dock: Spicy 6.5.0 frosted glass capsule with neutral iOS-mono
    accent and smooth intrinsic width expansion (interpolate-size allow-keywords) */
 .blyrics-dock,
@@ -2900,6 +2927,22 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 .blyrics-dock__inner:hover {
   background: var(--spicy-capsule-hover-bg) !important;
   box-shadow: var(--spicy-capsule-hover-shadow) !important;
+}
+
+.blyrics-dock--hidden .blyrics-dock__inner,
+.blyrics-dock--loading .blyrics-dock__inner,
+#layout[player-fullscreened]:not([blyrics-dfs]) .blyrics-dock:not(:hover, :focus-within) .blyrics-dock__inner:not(.blyrics-dock__inner--expanded) {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  transition:
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    -webkit-filter 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.22s ease,
+    box-shadow 0.22s ease,
+    -webkit-backdrop-filter 0s linear 0.32s,
+    backdrop-filter 0s linear 0.32s !important;
 }
 
 /* Smoothly interpolate source label to its exact text width (max-content)
@@ -3500,12 +3543,12 @@ ytmusic-player-page #side-panel ytmusic-responsive-list-item-renderer:hover {
   background: rgb(255 255 255 / 0.08) !important;
 }
 
-ytmusic-player-page #side-panel ytmusic-responsive-list-item-renderer:is([active], [selected], :has(ytmusic-play-button-renderer[state="playing"]), :has(ytmusic-play-button-renderer[state="paused"])) {
+ytmusic-player-page #side-panel ytmusic-responsive-list-item-renderer:is([active], [selected], :has(ytmusic-play-button-renderer:is([state="playing"], [state="paused"]))) {
   background: var(--spicy-glass-card-active-bg) !important;
   box-shadow: var(--spicy-glass-card-active-shadow) !important;
 }
 
-ytmusic-player-page #side-panel ytmusic-responsive-list-item-renderer:is([active], [selected], :has(ytmusic-play-button-renderer[state="playing"]), :has(ytmusic-play-button-renderer[state="paused"])):hover {
+ytmusic-player-page #side-panel ytmusic-responsive-list-item-renderer:is([active], [selected], :has(ytmusic-play-button-renderer:is([state="playing"], [state="paused"]))):hover {
   background: var(--spicy-glass-card-active-hover-bg) !important;
 }
 
@@ -3751,7 +3794,11 @@ ytmusic-search-box #suggestion-list {
   ytmusic-app-layout #mini-guide-background,
   ytmusic-player-bar ytmusic-like-button-renderer *,
   .autoscroll-resume-button,
+  .autoscroll-resume-button[autoscroll-hidden="true"],
   .blyrics-dock__inner,
+  .blyrics-dock--hidden .blyrics-dock__inner,
+  .blyrics-dock--loading .blyrics-dock__inner,
+  #layout[player-fullscreened]:not([blyrics-dfs]) .blyrics-dock:not(:hover, :focus-within) .blyrics-dock__inner:not(.blyrics-dock__inner--expanded),
   .blyrics-dock__control,
   .blyrics-dock__cycle,
   .blyrics-dock__offset-step,
