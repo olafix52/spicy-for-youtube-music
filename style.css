@@ -951,6 +951,24 @@ $spicy-style-side-tabs: true;
   text-shadow: none !important;
 }
 
+/* Skip style, layout, and paint for the duplicate highlight layer on lines that
+   are neither active nor animating (~47% of lyric DOM nodes and ~99% of masked
+   letter spans). Discrete transitions wake the layer in 0s on entry while
+   holding it visible through the 0.8s exit fade-out on retirement; manual
+   scrolling snaps off any pending transition immediately. */
+.blyrics-container:not([data-sync="none"]) > .blyrics--line .blyrics-highlight-run {
+  transition: content-visibility 0s allow-discrete;
+}
+
+.blyrics-container:not([data-sync="none"]) > .blyrics--line:not(.blyrics--active, .blyrics--animating) .blyrics-highlight-run {
+  content-visibility: hidden;
+  transition: content-visibility calc(var(--blyrics-lyric-highlight-fade-out-duration, 0.8s) + 0.05s) allow-discrete;
+}
+
+.blyrics-container.blyrics-user-scrolling:not([data-sync="none"]) > .blyrics--line:not(.blyrics--active, .blyrics--animating) .blyrics-highlight-run {
+  transition: none;
+}
+
 .blyrics-container[data-sync="richsync"] :is(.blyrics--paused .blyrics--letter, .blyrics--letter.blyrics--paused) {
   animation-play-state: paused;
 }
