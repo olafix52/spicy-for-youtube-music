@@ -14,7 +14,7 @@ See [DESCRIPTION.md](DESCRIPTION.md) for the full feature list.
 
 ## Tuning
 
-Open `style.css` and edit the **Tunables** block at the top. Switch `$spicy-glass-style` between `frosted` (default), `liquid` (glossy specular), and `lite` (no backdrop blur, best performance), and `$spicy-scroll-fade` between `false` (default, smoother Chromium scrolling) and `true` (top/bottom edge fade masks on the side panel).
+Open `style.css` and edit the **Tunables** block at the top. Switch `$spicy-glass-style` between `liquid` (default, glossy specular), `frosted` (matte dark frost), and `lite` (no backdrop blur, best performance), and `$spicy-scroll-fade` between `false` (default, smoother Chromium scrolling) and `true` (top/bottom edge fade masks on the side panel).
 
 ## License
 

@@ -30,10 +30,10 @@ blyrics-line-scroll-below-duration = 700ms;
 /* ---------------------------------------------------------------------------
    1. Tunables
    ------------------------------------------------------------------------ */
-/* glass surface preset: "frosted" (default, matte dark frost without edge glare),
-   "liquid" (glossy refraction with specular edge highlights), or
+/* glass surface preset: "liquid" (default, glossy refraction with specular edge highlights),
+   "frosted" (matte dark frost without edge glare), or
    "lite" (no backdrop-filter blur passes, fastest GPU path) */
-$spicy-glass-style: frosted;
+$spicy-glass-style: liquid;
 
 /* soft gradient mask fade on the side-panel scroll container (#tab-renderer):
    false (default, avoids full-height GaneshGL RenderPass overhead in Chromium)

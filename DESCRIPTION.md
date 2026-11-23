@@ -39,7 +39,7 @@ Brings the look of [Spicy Lyrics](https://github.com/Spikerko/spicy-lyrics) (the
 
 Everything adjustable is in the **Tunables** block at the top of the CSS, including:
 
-- glass surface style (`$spicy-glass-style`: `frosted` by default, `liquid`, or `lite` with no backdrop blur);
+- glass surface style (`$spicy-glass-style`: `liquid` by default, `frosted`, or `lite` with no backdrop blur);
 - side-panel scroll edge fade (`$spicy-scroll-fade`: `false` by default for smoother Chromium scrolling, or `true`);
 - global lyrics scale (`--spicy-lyrics-scale`) and line spacing (`--spicy-line-gap`);
 - blur per line;
