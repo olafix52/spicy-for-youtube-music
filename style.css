@@ -670,10 +670,11 @@ $spicy-scroll-fade: false;
    ease-in-out curve that ends at the peak with zero speed), then settles
    back on the Spicy spring from that same point at zero speed.
    Animations rather than transitions: a transition is cut short when the
-   syllable ends, which jerked mid-rise. Timing is Spicy's: the rise follows
-   the syllable plus about the lag of Spicy's spring, and the settle uses
-   the Spicy springs (scale 0.88 Hz damping 0.64, lift 1.45 Hz damping 0.4,
-   from its Spring.ts and LyricsAnimator.ts).
+   syllable ends, which jerked mid-rise. Lift and scale each run as a single
+   animation (rising to peak at 18% / 22%, then settling on the Spicy springs
+   — scale 0.88 Hz damping 0.64, lift 1.45 Hz damping 0.4, from Spring.ts and
+   LyricsAnimator.ts) so Chromium keeps both on the compositor thread instead
+   of rejecting overlapping animations on the same property.
    Performance: nothing is kept after the motion ("forwards" fills kept
    thousands of finished animations alive late in a song), and only the
    lines around the active one carry the animation at all, so finished ones
@@ -699,10 +700,8 @@ $spicy-scroll-fade: false;
   --spicy-lift-rise: clamp(var(--spicy-word-rise-min), calc(var(--blyrics-duration, 300ms) + var(--spicy-word-rise-extra)), 100s);
   --spicy-scale-rise: calc(var(--spicy-lift-rise) + var(--spicy-word-scale-lag));
   animation:
-    spicy-word-lift-settle 1.64s linear var(--spicy-lift-rise) backwards,
-    spicy-word-lift-rise var(--spicy-lift-rise) cubic-bezier(0.33, 0, 0.58, 1),
-    spicy-word-scale-settle 1.64s linear var(--spicy-scale-rise) backwards,
-    spicy-word-scale-rise var(--spicy-scale-rise) cubic-bezier(0.37, 0, 0.63, 1);
+    spicy-word-lift clamp(1.56s, calc(var(--spicy-lift-rise) / 0.18), 4.2s) linear,
+    spicy-word-scale clamp(1.68s, calc(var(--spicy-scale-rise) / 0.22), 4.2s) linear;
 }
 
 /* the bounce stops with the music */
@@ -717,92 +716,77 @@ $spicy-scroll-fade: false;
   display: inline-block;
 }
 
-@keyframes spicy-word-lift-rise {
-  from {
-    translate: 0 var(--spicy-word-rest-y);
-  }
-  to {
-    translate: var(--spicy-word-push-x, 0px) var(--spicy-word-peak-y);
-  }
-}
-
-@keyframes spicy-word-scale-rise {
-  from {
-    scale: var(--spicy-word-rest-scale);
-  }
-  to {
-    scale: var(--spicy-word-peak-scale);
-  }
-}
-
-/* the Spicy springs from the peak back to rest, sampled every 2.5% */
-@keyframes spicy-word-lift-settle {
-  0% { translate: calc(var(--spicy-word-push-x, 0px) * 1.0000) calc(var(--spicy-word-peak-y) * 1.0000); }
-  2.5% { translate: calc(var(--spicy-word-push-x, 0px) * 0.9374) calc(var(--spicy-word-peak-y) * 0.9374); }
-  5% { translate: calc(var(--spicy-word-push-x, 0px) * 0.7792) calc(var(--spicy-word-peak-y) * 0.7792); }
-  7.5% { translate: calc(var(--spicy-word-push-x, 0px) * 0.5690) calc(var(--spicy-word-peak-y) * 0.5690); }
-  10% { translate: calc(var(--spicy-word-push-x, 0px) * 0.3453) calc(var(--spicy-word-peak-y) * 0.3453); }
-  12.5% { translate: calc(var(--spicy-word-push-x, 0px) * 0.1382) calc(var(--spicy-word-peak-y) * 0.1382); }
-  15% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0319) calc(var(--spicy-word-peak-y) * -0.0319); }
-  17.5% { translate: calc(var(--spicy-word-push-x, 0px) * -0.1543) calc(var(--spicy-word-peak-y) * -0.1543); }
-  20% { translate: calc(var(--spicy-word-push-x, 0px) * -0.2266) calc(var(--spicy-word-peak-y) * -0.2266); }
-  22.5% { translate: calc(var(--spicy-word-push-x, 0px) * -0.2533) calc(var(--spicy-word-peak-y) * -0.2533); }
-  25% { translate: calc(var(--spicy-word-push-x, 0px) * -0.2428) calc(var(--spicy-word-peak-y) * -0.2428); }
-  27.5% { translate: calc(var(--spicy-word-push-x, 0px) * -0.2061) calc(var(--spicy-word-peak-y) * -0.2061); }
-  30% { translate: calc(var(--spicy-word-push-x, 0px) * -0.1544) calc(var(--spicy-word-peak-y) * -0.1544); }
-  32.5% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0975) calc(var(--spicy-word-peak-y) * -0.0975); }
-  35% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0438) calc(var(--spicy-word-peak-y) * -0.0438); }
-  37.5% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0013) calc(var(--spicy-word-peak-y) * 0.0013); }
-  40% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0346) calc(var(--spicy-word-peak-y) * 0.0346); }
-  42.5% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0552) calc(var(--spicy-word-peak-y) * 0.0552); }
-  45% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0638) calc(var(--spicy-word-peak-y) * 0.0638); }
-  47.5% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0627) calc(var(--spicy-word-peak-y) * 0.0627); }
-  50% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0543) calc(var(--spicy-word-peak-y) * 0.0543); }
-  52.5% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0417) calc(var(--spicy-word-peak-y) * 0.0417); }
-  55% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0273) calc(var(--spicy-word-peak-y) * 0.0273); }
-  57.5% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0134) calc(var(--spicy-word-peak-y) * 0.0134); }
-  60% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0015) calc(var(--spicy-word-peak-y) * 0.0015); }
-  62.5% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0075) calc(var(--spicy-word-peak-y) * -0.0075); }
-  65% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0133) calc(var(--spicy-word-peak-y) * -0.0133); }
-  67.5% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0160) calc(var(--spicy-word-peak-y) * -0.0160); }
-  70% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0161) calc(var(--spicy-word-peak-y) * -0.0161); }
-  72.5% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0143) calc(var(--spicy-word-peak-y) * -0.0143); }
-  75% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0112) calc(var(--spicy-word-peak-y) * -0.0112); }
+/* single-animation rise (0% -> 18% / 22%) followed by the Spicy spring settle
+   sampled every 2.5% of the settle window */
+@keyframes spicy-word-lift {
+  0% { translate: 0 var(--spicy-word-rest-y); animation-timing-function: cubic-bezier(0.33, 0, 0.58, 1); }
+  18% { translate: calc(var(--spicy-word-push-x, 0px) * 1.0000) calc(var(--spicy-word-peak-y) * 1.0000); animation-timing-function: linear; }
+  20.05% { translate: calc(var(--spicy-word-push-x, 0px) * 0.9374) calc(var(--spicy-word-peak-y) * 0.9374); }
+  22.1% { translate: calc(var(--spicy-word-push-x, 0px) * 0.7792) calc(var(--spicy-word-peak-y) * 0.7792); }
+  24.15% { translate: calc(var(--spicy-word-push-x, 0px) * 0.5690) calc(var(--spicy-word-peak-y) * 0.5690); }
+  26.2% { translate: calc(var(--spicy-word-push-x, 0px) * 0.3453) calc(var(--spicy-word-peak-y) * 0.3453); }
+  28.25% { translate: calc(var(--spicy-word-push-x, 0px) * 0.1382) calc(var(--spicy-word-peak-y) * 0.1382); }
+  30.3% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0319) calc(var(--spicy-word-peak-y) * -0.0319); }
+  32.35% { translate: calc(var(--spicy-word-push-x, 0px) * -0.1543) calc(var(--spicy-word-peak-y) * -0.1543); }
+  34.4% { translate: calc(var(--spicy-word-push-x, 0px) * -0.2266) calc(var(--spicy-word-peak-y) * -0.2266); }
+  36.45% { translate: calc(var(--spicy-word-push-x, 0px) * -0.2533) calc(var(--spicy-word-peak-y) * -0.2533); }
+  38.5% { translate: calc(var(--spicy-word-push-x, 0px) * -0.2428) calc(var(--spicy-word-peak-y) * -0.2428); }
+  40.55% { translate: calc(var(--spicy-word-push-x, 0px) * -0.2061) calc(var(--spicy-word-peak-y) * -0.2061); }
+  42.6% { translate: calc(var(--spicy-word-push-x, 0px) * -0.1544) calc(var(--spicy-word-peak-y) * -0.1544); }
+  44.65% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0975) calc(var(--spicy-word-peak-y) * -0.0975); }
+  46.7% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0438) calc(var(--spicy-word-peak-y) * -0.0438); }
+  48.75% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0013) calc(var(--spicy-word-peak-y) * 0.0013); }
+  50.8% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0346) calc(var(--spicy-word-peak-y) * 0.0346); }
+  52.85% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0552) calc(var(--spicy-word-peak-y) * 0.0552); }
+  54.9% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0638) calc(var(--spicy-word-peak-y) * 0.0638); }
+  56.95% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0627) calc(var(--spicy-word-peak-y) * 0.0627); }
+  59% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0543) calc(var(--spicy-word-peak-y) * 0.0543); }
+  61.05% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0417) calc(var(--spicy-word-peak-y) * 0.0417); }
+  63.1% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0273) calc(var(--spicy-word-peak-y) * 0.0273); }
+  65.15% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0134) calc(var(--spicy-word-peak-y) * 0.0134); }
+  67.2% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0015) calc(var(--spicy-word-peak-y) * 0.0015); }
+  69.25% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0075) calc(var(--spicy-word-peak-y) * -0.0075); }
+  71.3% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0133) calc(var(--spicy-word-peak-y) * -0.0133); }
+  73.35% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0160) calc(var(--spicy-word-peak-y) * -0.0160); }
+  75.4% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0161) calc(var(--spicy-word-peak-y) * -0.0161); }
+  77.45% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0143) calc(var(--spicy-word-peak-y) * -0.0143); }
+  79.5% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0112) calc(var(--spicy-word-peak-y) * -0.0112); }
   100% { translate: 0 0; }
 }
 
-@keyframes spicy-word-scale-settle {
-  0% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 1.0000); }
-  2.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.9767); }
-  5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.9159); }
-  7.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.8297); }
-  10% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.7284); }
-  12.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.6203); }
-  15% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.5118); }
-  17.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.4079); }
-  20% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.3121); }
-  22.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.2265); }
-  25% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.1525); }
-  27.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0903); }
-  30% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0397); }
-  32.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0002); }
-  35% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0294); }
-  37.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0503); }
-  40% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0637); }
-  42.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0708); }
-  45% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0730); }
-  47.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0715); }
-  50% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0671); }
-  52.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0609); }
-  55% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0535); }
-  57.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0456); }
-  60% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0377); }
-  62.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0301); }
-  65% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0230); }
-  67.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0168); }
-  70% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0113); }
-  72.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0067); }
-  75% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0030); }
+@keyframes spicy-word-scale {
+  0% { scale: var(--spicy-word-rest-scale); animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
+  22% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 1.0000); animation-timing-function: linear; }
+  23.95% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.9767); }
+  25.9% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.9159); }
+  27.85% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.8297); }
+  29.8% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.7284); }
+  31.75% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.6203); }
+  33.7% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.5118); }
+  35.65% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.4079); }
+  37.6% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.3121); }
+  39.55% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.2265); }
+  41.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.1525); }
+  43.45% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0903); }
+  45.4% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0397); }
+  47.35% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0002); }
+  49.3% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0294); }
+  51.25% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0503); }
+  53.2% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0637); }
+  55.15% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0708); }
+  57.1% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0730); }
+  59.05% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0715); }
+  61% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0671); }
+  62.95% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0609); }
+  64.9% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0535); }
+  66.85% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0456); }
+  68.8% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0377); }
+  70.75% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0301); }
+  72.7% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0230); }
+  74.65% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0168); }
+  76.6% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0113); }
+  78.55% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0067); }
+  80.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0030); }
   100% { scale: 1; }
 }
 
