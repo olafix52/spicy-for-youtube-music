@@ -481,9 +481,7 @@ $spicy-bg-motion: false;
   --spicy-level: 4;
   --spicy-line-idle-opacity: var(--spicy-upcoming-line-opacity);
   contain: layout style;
-  transition:
-    opacity var(--spicy-line-transition),
-    text-shadow 0.3s ease;
+  transition: opacity var(--spicy-line-transition);
 }
 
 /* Smooth blur transition only for lines entering or leaving the immediate focal zone */
@@ -493,6 +491,12 @@ $spicy-bg-motion: false;
   .blyrics--line:has(+ .blyrics--active),
   .blyrics--active + .blyrics--line
 ) {
+  transition:
+    filter var(--spicy-line-transition),
+    opacity var(--spicy-line-transition);
+}
+
+.blyrics-container > :where(.blyrics--active) {
   transition:
     filter var(--spicy-line-transition),
     opacity var(--spicy-line-transition),
@@ -697,6 +701,21 @@ $spicy-bg-motion: false;
    that split Chromium compositor layers during manual scrolling. Word transitions
    stay scoped to the active/animating zone so entering +2 does not spawn scale
    animations on every line advance. */
+/* Register per-word animation durations as non-inherited so flipping
+   data-word-state on a .blyrics--word never cascades custom-property
+   invalidation down into its .blyrics--letter child spans. */
+@property --spicy-lift-rise {
+  syntax: "<time>";
+  inherits: false;
+  initial-value: 280ms;
+}
+
+@property --spicy-scale-rise {
+  syntax: "<time>";
+  inherits: false;
+  initial-value: 370ms;
+}
+
 .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating) .blyrics--word {
   transition:
     scale 0.3s ease,
@@ -1082,7 +1101,6 @@ ytmusic-player-page:before {
   filter: saturate(var(--blyrics-background-saturate)) brightness(var(--spicy-bg-brightness)) blur(var(--blyrics-background-blur));
   @if $spicy-bg-motion == true or $spicy-bg-motion == "true" {
     will-change: transform;
-    transform: translateZ(0);
     animation: spicy-bg-drift-a var(--spicy-bg-duration) ease-in-out infinite alternate;
   } @else {
     transform: scale(1.3);
@@ -1103,7 +1121,6 @@ ytmusic-player-page:after {
   opacity: 0.35;
   @if $spicy-bg-motion == true or $spicy-bg-motion == "true" {
     will-change: transform;
-    transform: translateZ(0);
     animation: spicy-bg-drift-b calc(var(--spicy-bg-duration) * 1.3) ease-in-out infinite alternate;
   } @else {
     transform: scale(1.5) rotate(180deg);
@@ -1202,7 +1219,7 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
   min-height: 0 !important;
   aspect-ratio: 1 / 1;
   border-radius: var(--spicy-fs-art-radius);
-  overflow: hidden;
+  overflow: clip;
   opacity: 0.95;
   box-shadow: 0 9px 20px 0 rgb(0 0 0 / 0.271) !important;
 }
@@ -1420,7 +1437,7 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
 ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls .blyrics-progress__bar {
   height: clamp(9px, calc(var(--spicy-fs-art-size) * 0.024), 16px);
   border-radius: 999px;
-  overflow: hidden;
+  overflow: clip;
   background: var(--spicy-slider-bg);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
@@ -1987,7 +2004,6 @@ ytmusic-player-page:is([blyrics-video-mode], [video-mode]):not([player-ui-state=
   filter: saturate(var(--blyrics-background-saturate)) brightness(var(--spicy-page-bg-brightness)) blur(var(--spicy-page-bg-blur));
   @if $spicy-bg-motion == true or $spicy-bg-motion == "true" {
     will-change: transform;
-    transform: translateZ(0);
     /* about 10 steps a second: under a 120px blur the drift looks the same,
        and the page is redrawn a tenth as often (measured about 40% less GPU) */
     animation: spicy-bg-drift-a var(--spicy-page-bg-duration) steps(450) infinite alternate;
@@ -2030,11 +2046,30 @@ ytmusic-browse-response #contents {
   visibility: hidden;
 }
 
-/* top bar (shows up after scrolling) and the collapsed side bar: glass */
-#layout:not([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"]) :is(#nav-bar-background, #mini-guide-background) {
+/* top bar (shows up after scrolling) and the collapsed side bar: keep blur
+   disabled while invisible (unscrolled top bar or hidden mini guide) */
+#layout:not([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"]) #mini-guide-background {
   background: var(--spicy-glass) !important;
-  backdrop-filter: var(--spicy-glass-bar-filter);
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
   border: none !important;
+}
+
+#layout:not([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"]) #nav-bar-background {
+  background: var(--spicy-glass) !important;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border: none !important;
+  transition:
+    opacity 0.2s,
+    -webkit-backdrop-filter 0s linear 0.2s,
+    backdrop-filter 0s linear 0.2s;
+}
+
+#layout.content-scrolled:not([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"]) #nav-bar-background {
+  -webkit-backdrop-filter: var(--spicy-glass-bar-filter);
+  backdrop-filter: var(--spicy-glass-bar-filter);
+  transition: opacity 0.2s;
 }
 
 #layout:not([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"]) #nav-bar-divider {
@@ -2057,6 +2092,8 @@ ytmusic-app-layout:is([player-fullscreened], [player-ui-state="FULLSCREEN"]) :is
    under the top bar (YouTube Music fades both in on scroll) */
 ytmusic-app-layout.content-scrolled :is(#mini-guide-background, #nav-bar-divider).ytmusic-app-layout {
   opacity: 0 !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
 }
 
 /* expanded side bar: the glass sits on a pseudo layer, because a backdrop
@@ -2073,9 +2110,9 @@ ytmusic-app-layout.content-scrolled :is(#mini-guide-background, #nav-bar-divider
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  transform: translateZ(0);
   background: var(--spicy-glass);
-  backdrop-filter: var(--spicy-glass-bar-filter);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 /* same font as the lyrics. YouTube Music sets "YouTube Sans" and Roboto
@@ -2100,6 +2137,13 @@ ytmusic-carousel-shelf-basic-header-renderer .strapline {
   opacity: 0.6;
 }
 
+/* isolate browse card and row layout/style without paint clipping so hover
+   scales and ambient shadows never get cropped */
+ytmusic-two-row-item-renderer,
+ytmusic-responsive-list-item-renderer {
+  contain: layout style;
+}
+
 /* tile captions */
 ytmusic-two-row-item-renderer .title {
   font-weight: 600;
@@ -2111,10 +2155,10 @@ ytmusic-two-row-item-renderer .subtitle {
 
 /* covers: rounder, soft shadow, a small bouncy zoom on hover
    (artist tiles, cropped to a circle, are left round) */
-ytmusic-two-row-item-renderer .image-wrapper:not(:has([thumbnail-crop*="CIRCLE"])),
+ytmusic-two-row-item-renderer .image-wrapper:not(:has(> ytmusic-thumbnail-renderer[thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"])),
 ytmusic-responsive-list-item-renderer .left-items {
   border-radius: var(--spicy-tile-radius) !important;
-  overflow: hidden;
+  overflow: clip;
   box-shadow: 0 6px 16px rgb(0 0 0 / 0.3);
 }
 
@@ -2292,7 +2336,7 @@ ytmusic-player-bar:hover #progress-bar.ytmusic-player-bar {
 /* album cover: rounded corners and subtle shadow */
 ytmusic-player-bar :is(.thumbnail, .image, #thumbnail, #thumbnail img) {
   border-radius: var(--spicy-tile-radius) !important;
-  overflow: hidden;
+  overflow: clip;
 }
 
 /* song info typography */
@@ -2374,8 +2418,6 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 
 .blyrics-pip-artwork__control::before {
   background: var(--spicy-pip-control-bg);
-  backdrop-filter: var(--spicy-pip-control-filter);
-  -webkit-backdrop-filter: var(--spicy-pip-control-filter);
   border: 1px solid rgb(255 255 255 / 0.2);
   box-shadow: 0 4px 14px rgb(0 0 0 / 0.32);
 }
@@ -3130,7 +3172,7 @@ ytmusic-player-page #side-panel tp-yt-paper-tabs.tab-header-container #tabsConte
   pointer-events: none;
   z-index: 0;
   transition:
-    transform 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+    translate 0.36s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.2s ease,
     background-color 0.2s ease;
 }
@@ -3144,23 +3186,23 @@ ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header.ir
 }
 
 ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header:nth-of-type(1).iron-selected)::before {
-  transform: translate3d(0, 0, 0);
+  translate: 0 0;
 }
 
 ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header:nth-of-type(2).iron-selected)::before {
-  transform: translate3d(calc(1 * (var(--spicy-tab-width) + var(--spicy-tab-gap))), 0, 0);
+  translate: calc(1 * (var(--spicy-tab-width) + var(--spicy-tab-gap))) 0;
 }
 
 ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header:nth-of-type(3).iron-selected)::before {
-  transform: translate3d(calc(2 * (var(--spicy-tab-width) + var(--spicy-tab-gap))), 0, 0);
+  translate: calc(2 * (var(--spicy-tab-width) + var(--spicy-tab-gap))) 0;
 }
 
 ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header:nth-of-type(4).iron-selected)::before {
-  transform: translate3d(calc(3 * (var(--spicy-tab-width) + var(--spicy-tab-gap))), 0, 0);
+  translate: calc(3 * (var(--spicy-tab-width) + var(--spicy-tab-gap))) 0;
 }
 
 ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header:nth-of-type(5).iron-selected)::before {
-  transform: translate3d(calc(4 * (var(--spicy-tab-width) + var(--spicy-tab-gap))), 0, 0);
+  translate: calc(4 * (var(--spicy-tab-width) + var(--spicy-tab-gap))) 0;
 }
 
 ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header {
@@ -3286,7 +3328,7 @@ ytmusic-player-page #side-panel :is(ytmusic-queue-header-renderer, ytmusic-playe
   font-family: var(--spicy-font);
 }
 
-ytmusic-player-page #side-panel :is(ytmusic-queue-header-renderer, ytmusic-player-queue) :is(yt-formatted-string, a, span, button) {
+ytmusic-player-page #side-panel :is(ytmusic-queue-header-renderer, ytmusic-player-queue) :is(yt-formatted-string, a, button) {
   font-family: var(--spicy-font) !important;
 }
 
@@ -3405,19 +3447,23 @@ ytmusic-player-page #side-panel ytmusic-player-queue-item[selected]:hover {
   background: var(--spicy-glass-card-active-hover-bg) !important;
 }
 
-/* already played items above the active track sit quieter, like sung lyrics */
-ytmusic-player-page #side-panel ytmusic-player-queue-item:has(~ ytmusic-player-queue-item[selected]) {
+/* already played items above the active track sit quieter, like sung lyrics;
+   scope dimming to the list holding the selected item and restore forward
+   siblings to avoid per-item :has(~) checks on hover and track switches */
+ytmusic-player-page #side-panel ytmusic-player-queue :is(#contents, #automix-contents):where(:has(> ytmusic-player-queue-item[selected])) > ytmusic-player-queue-item {
   opacity: var(--spicy-queue-played-opacity);
 }
 
-ytmusic-player-page #side-panel ytmusic-player-queue-item:has(~ ytmusic-player-queue-item[selected]):hover {
+ytmusic-player-page #side-panel ytmusic-player-queue :is(#contents, #automix-contents) > ytmusic-player-queue-item[selected],
+ytmusic-player-page #side-panel ytmusic-player-queue :is(#contents, #automix-contents) > ytmusic-player-queue-item[selected] ~ ytmusic-player-queue-item,
+ytmusic-player-page #side-panel ytmusic-player-queue :is(#contents, #automix-contents) > ytmusic-player-queue-item:hover {
   opacity: 1;
 }
 
 /* rounded thumbnails cropped to fill without black letterbox bars */
 ytmusic-player-page #side-panel ytmusic-player-queue-item :is(.left-items, .thumbnail, ytmusic-thumbnail-renderer, #thumbnail) {
   border-radius: var(--spicy-queue-thumb-radius) !important;
-  overflow: hidden !important;
+  overflow: clip !important;
 }
 
 ytmusic-player-page #side-panel ytmusic-player-queue-item .left-items {
@@ -3469,7 +3515,7 @@ ytmusic-player-page #side-panel :is(ytmusic-section-list-renderer, ytmusic-carou
   font-family: var(--spicy-font);
 }
 
-ytmusic-player-page #side-panel :is(ytmusic-section-list-renderer, ytmusic-carousel-shelf-renderer, ytmusic-carousel-shelf-basic-header-renderer, ytmusic-responsive-list-item-renderer, ytmusic-two-row-item-renderer) :is(yt-formatted-string, a, h2, span, button) {
+ytmusic-player-page #side-panel :is(ytmusic-section-list-renderer, ytmusic-carousel-shelf-renderer, ytmusic-carousel-shelf-basic-header-renderer, ytmusic-responsive-list-item-renderer, ytmusic-two-row-item-renderer) :is(yt-formatted-string, a, h2, button) {
   font-family: var(--spicy-font) !important;
 }
 
@@ -3490,7 +3536,7 @@ ytmusic-player-page #side-panel ytmusic-carousel-shelf-basic-header-renderer .st
 
 ytmusic-player-page #side-panel ytmusic-carousel-shelf-basic-header-renderer :is(#thumbnail, ytmusic-thumbnail-renderer) {
   border-radius: 999px !important;
-  overflow: hidden;
+  overflow: clip;
   box-shadow:
     0 4px 12px rgb(0 0 0 / 0.35),
     0 0 0 1px rgb(255 255 255 / 0.14);
@@ -3591,9 +3637,9 @@ ytmusic-player-page #side-panel ytmusic-responsive-list-item-renderer :is(#thumb
 }
 
 /* circular artist portraits ("Similar artists"): depth shadow + subtle glass ring */
-ytmusic-player-page #side-panel ytmusic-two-row-item-renderer .image-wrapper:has([thumbnail-crop*="CIRCLE"]) {
+ytmusic-player-page #side-panel ytmusic-two-row-item-renderer .image-wrapper:has(> ytmusic-thumbnail-renderer[thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"]) {
   border-radius: 999px !important;
-  overflow: hidden;
+  overflow: clip;
   box-shadow:
     0 8px 22px rgb(0 0 0 / 0.42),
     0 0 0 1px rgb(255 255 255 / 0.1);
@@ -3638,7 +3684,7 @@ ytmusic-app-layout tp-yt-app-drawer#guide:not([opened]) #contentContainer {
 
 /* the mini bar stays in layout and cross-fades on browse pages: it fades out
    just after the panel starts covering it and fades back in once the panel is leaving */
-ytmusic-app-layout:not([player-fullscreened], [player-ui-state="FULLSCREEN"]):not(:has(ytmusic-player-page[player-fullscreened])) #mini-guide {
+ytmusic-app-layout:not([player-fullscreened], [player-ui-state="FULLSCREEN"]):not(:has(> ytmusic-player-page[player-fullscreened])) #mini-guide {
   display: block !important;
   opacity: 1;
   transition: opacity 0.2s ease 0.16s !important;
@@ -3652,7 +3698,7 @@ ytmusic-app-layout:has(> tp-yt-app-drawer#guide[opened]) #mini-guide {
 
 /* in fullscreen mode, the navigation side bars stay strictly hidden */
 ytmusic-app-layout:is([player-fullscreened], [player-ui-state="FULLSCREEN"]) :is(#mini-guide, #mini-guide-background, tp-yt-app-drawer#guide),
-ytmusic-app-layout:has(ytmusic-player-page[player-fullscreened]) :is(#mini-guide, #mini-guide-background, tp-yt-app-drawer#guide) {
+ytmusic-app-layout:has(> ytmusic-player-page[player-fullscreened]) :is(#mini-guide, #mini-guide-background, tp-yt-app-drawer#guide) {
   display: none !important;
   opacity: 0 !important;
   pointer-events: none !important;
@@ -3674,8 +3720,18 @@ ytmusic-guide-renderer :is(ytmusic-guide-entry-renderer, ytmusic-guide-section-r
   text-overflow: clip;
 }
 
-/* glass layer of the expanded drawer fades along with the slide */
+/* glass layer of the expanded drawer fades along with the slide; delay turning
+   backdrop-filter off until the drawer slide finishes so glass does not snap */
 #layout:not([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"]) #guide-wrapper::before {
+  transition:
+    opacity var(--spicy-guide-time) var(--spicy-guide-ease),
+    -webkit-backdrop-filter 0s linear var(--spicy-guide-time),
+    backdrop-filter 0s linear var(--spicy-guide-time);
+}
+
+#layout:not([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"]) tp-yt-app-drawer#guide[opened] #guide-wrapper::before {
+  -webkit-backdrop-filter: var(--spicy-glass-bar-filter);
+  backdrop-filter: var(--spicy-glass-bar-filter);
   transition: opacity var(--spicy-guide-time) var(--spicy-guide-ease);
 }
 
@@ -3800,7 +3856,9 @@ ytmusic-search-box #suggestion-list {
   ytmusic-player-page #player.ytmusic-player-page #song-media-window .top-row-buttons,
   ytmusic-app-layout tp-yt-app-drawer#guide #contentContainer,
   ytmusic-app-layout tp-yt-app-drawer#guide #scrim,
+  #layout #nav-bar-background,
   #layout #guide-wrapper::before,
+  #layout tp-yt-app-drawer#guide[opened] #guide-wrapper::before,
   ytmusic-app-layout #mini-guide,
   ytmusic-app-layout #mini-guide-background,
   ytmusic-player-bar ytmusic-like-button-renderer *,
