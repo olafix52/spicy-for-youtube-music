@@ -1649,7 +1649,6 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
   ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) :is(.blyrics-fs-info-row, .blyrics-fs-progress-slot) {
     translate: 0 var(--spicy-dock-reserve);
     transition: translate 0.55s cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: translate;
   }
 
   ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) .blyrics-fs-info-row {
@@ -3076,7 +3075,6 @@ ytmusic-player-page #side-panel tp-yt-paper-tabs.tab-header-container #tabsConte
   opacity: 0;
   pointer-events: none;
   z-index: 0;
-  will-change: transform;
   transition:
     transform 0.36s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.2s ease,
@@ -3329,6 +3327,7 @@ ytmusic-player-page #side-panel ytmusic-player-queue :is(#contents, #automix-con
 
 ytmusic-player-page #side-panel ytmusic-player-queue-item {
   --ytmusic-player-queue-item-background: transparent;
+  contain: layout style;
   border-top: none !important;
   border-bottom: none !important;
   border-radius: var(--spicy-queue-item-radius) !important;
@@ -3485,6 +3484,7 @@ ytmusic-player-page #side-panel ytmusic-carousel-renderer {
 /* track list items ("You might also like"): rounded glass rows & concentric covers */
 ytmusic-player-page #side-panel ytmusic-responsive-list-item-renderer {
   --ytmusic-responsive-list-item-thumbnail-size: 38px;
+  contain: layout style;
   border-bottom: none !important;
   border-radius: var(--spicy-queue-item-radius) !important;
   padding: 5px 8px !important;
@@ -3575,7 +3575,6 @@ ytmusic-app-layout tp-yt-app-drawer#guide #contentContainer {
   transition:
     transform var(--spicy-guide-time) var(--spicy-guide-ease),
     visibility var(--spicy-guide-time) linear !important;
-  will-change: transform;
   overflow-x: clip;
 }
 
