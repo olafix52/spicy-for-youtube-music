@@ -14,7 +14,15 @@ See [DESCRIPTION.md](DESCRIPTION.md) for the full feature list.
 
 ## Tuning
 
-Open `style.css` and edit the **Tunables** block at the top. Switch `$spicy-glass-style` between `liquid` (default, glossy specular), `frosted` (matte dark frost), and `lite` (no backdrop blur, best performance), and `$spicy-scroll-fade` between `false` (default, smoother Chromium scrolling) and `true` (top/bottom edge fade masks on the side panel).
+Open `style.css` and edit the **Tunables** block at the top:
+
+- `$spicy-glass-style`: `liquid` (default, glossy specular), `frosted` (matte dark frost), or `lite` (no backdrop blur, fastest GPU path);
+- `$spicy-scroll-fade`: `false` (default, disables mask fade passes on the side panel, queue chips, and related carousels) or `true`;
+- `$spicy-bg-motion`: `false` (default, static CSS cover backdrop when Better Lyrics Shaders is off) or `true`;
+- `$spicy-canvas-immersive`: `false` (default, avoids `26` fullscreen `:has(#bls-video...)` rules and animated-stage dock overrides in Chromium) or `true`;
+- `$spicy-distance-blur`: `true` (default, progressive blur and sibling focus) or `false` (opacity-only dimming with zero blur `RenderSurface`s);
+- `$spicy-style-browse`: `true` (default, browse/home pages, nav bar, sidebar animations, and popups) or `false`;
+- `$spicy-style-side-tabs`: `true` (default, side-panel tab bar, Queue, and Related tabs) or `false`.
 
 ## License
 

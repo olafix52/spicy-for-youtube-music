@@ -18,4 +18,6 @@ Brings the look, spring physics, and layout of [Spicy Lyrics](https://github.com
 Edit the **Tunables** block at the top of `style.css` to adjust:
 
 - `$spicy-glass-style` (`liquid` default, `frosted`, or `lite` with no backdrop blur) and `$spicy-scroll-fade` (`false` default, or `true`);
+- `$spicy-bg-motion` (`false` default, or `true`) and `$spicy-canvas-immersive` (`false` default for faster fullscreen Chromium invalidation, or `true` for the full-height animated stage);
+- `$spicy-distance-blur` (`true` default, or `false` for opacity-only dimming), `$spicy-style-browse` (`true` default, or `false`), and `$spicy-style-side-tabs` (`true` default, or `false`);
 - lyrics scale (`--spicy-lyrics-scale`), line gap (`--spicy-line-gap`), distance blur, line opacities, word bounce, cover size, and hover box.
