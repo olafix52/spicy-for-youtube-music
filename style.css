@@ -210,8 +210,6 @@ $spicy-style-side-tabs: true;
 
     --spicy-capsule-bg: rgba(255, 255, 255, 0.08);
     --spicy-capsule-hover-bg: rgba(255, 255, 255, 0.12);
-    --spicy-player-capsule-bg: rgb(16 18 24 / 0.56);
-    --spicy-player-capsule-hover-bg: rgb(26 28 36 / 0.68);
     --spicy-capsule-filter: blur(24px) contrast(0.6) brightness(0.8) saturate(1.8);
     --spicy-capsule-shadow:
       0 12px 28px -12px rgba(8, 10, 18, 0.45),
@@ -282,8 +280,6 @@ $spicy-style-side-tabs: true;
 
     --spicy-capsule-bg: rgb(22 24 30 / 0.84);
     --spicy-capsule-hover-bg: rgb(34 37 46 / 0.9);
-    --spicy-player-capsule-bg: var(--spicy-capsule-bg);
-    --spicy-player-capsule-hover-bg: var(--spicy-capsule-hover-bg);
     --spicy-capsule-filter: none;
     --spicy-capsule-shadow:
       0 6px 18px -8px rgb(0 0 0 / 0.45),
@@ -333,8 +329,6 @@ $spicy-style-side-tabs: true;
 
     --spicy-capsule-bg: rgb(18 20 26 / 0.56);
     --spicy-capsule-hover-bg: rgb(28 30 38 / 0.66);
-    --spicy-player-capsule-bg: rgb(18 20 26 / 0.68);
-    --spicy-player-capsule-hover-bg: rgb(28 30 38 / 0.78);
     --spicy-capsule-filter: blur(20px) saturate(1.25);
     --spicy-capsule-shadow:
       0 8px 20px -10px rgb(0 0 0 / 0.4),
@@ -2979,9 +2973,10 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 /* ---------------------------------------------------------------------------
    8b. Autoscroll Pill & Controls Dock (Spicy 6.5.0 GroupedViewControls
        & ScrollToActive material)
-       Uses a matching semi-translucent dark capsule surface without per-frame
-       backdrop blur, crisp inner highlight rim, inner hover disc on Scroll to
-       Active, and high-contrast knockout white active disc on dock toggles.
+       Uses Spicy 6.5.0 frosted glass capsule material: subtle 8% white tint,
+       blur(24px) contrast(0.6) brightness(0.8) saturate(1.8), crisp inner
+       highlight rim, inner hover disc on Scroll to Active, and high-contrast
+       knockout white active disc on dock toggles.
    ------------------------------------------------------------------------ */
 .autoscroll-resume-button {
   isolation: isolate;
@@ -2994,9 +2989,9 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
   padding: 10px 22px !important;
   border: none !important;
   border-radius: 999px !important;
-  background: var(--spicy-player-capsule-bg) !important;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
+  background: var(--spicy-capsule-bg) !important;
+  -webkit-backdrop-filter: var(--spicy-capsule-filter) !important;
+  backdrop-filter: var(--spicy-capsule-filter) !important;
   box-shadow: var(--spicy-capsule-shadow) !important;
   text-shadow: none !important;
   transition:
@@ -3020,7 +3015,7 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 
 .autoscroll-resume-button:hover {
   color: #fff !important;
-  background: var(--spicy-player-capsule-hover-bg) !important;
+  background: var(--spicy-capsule-hover-bg) !important;
   text-shadow: none !important;
   box-shadow: var(--spicy-capsule-hover-shadow) !important;
 }
@@ -3031,6 +3026,19 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 
 .autoscroll-resume-button:active {
   scale: 0.95;
+}
+
+.autoscroll-resume-button[autoscroll-hidden="true"] {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  transition:
+    opacity 0.15s linear 50ms,
+    transform 0.25s cubic-bezier(0.23, 1, 0.32, 1),
+    background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+    scale 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+    -webkit-backdrop-filter 0s linear 0.2s,
+    backdrop-filter 0s linear 0.2s !important;
 }
 
 /* Controls dock: Spicy 6.5.0 frosted glass capsule with neutral iOS-mono
@@ -3045,9 +3053,9 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 .blyrics-dock__inner {
   border-radius: 999px !important;
   padding: 6px 10px !important;
-  background: var(--spicy-player-capsule-bg) !important;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
+  background: var(--spicy-capsule-bg) !important;
+  -webkit-backdrop-filter: var(--spicy-capsule-filter) !important;
+  backdrop-filter: var(--spicy-capsule-filter) !important;
   box-shadow: var(--spicy-capsule-shadow) !important;
   transition:
     transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
@@ -3059,7 +3067,7 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 }
 
 .blyrics-dock__inner:hover {
-  background: var(--spicy-player-capsule-hover-bg) !important;
+  background: var(--spicy-capsule-hover-bg) !important;
   box-shadow: var(--spicy-capsule-hover-shadow) !important;
 }
 
@@ -3225,9 +3233,9 @@ ytmusic-player-page #side-panel ytmusic-player-queue-item {
     padding: 4px 6.85px 4px 5.15px !important;
     border-bottom: none !important;
     border-radius: 999px !important;
-    background: var(--spicy-player-capsule-bg) !important;
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
+    background: var(--spicy-capsule-bg) !important;
+    -webkit-backdrop-filter: var(--spicy-capsule-filter) !important;
+    backdrop-filter: var(--spicy-capsule-filter) !important;
     box-shadow: var(--spicy-capsule-shadow) !important;
     overflow: visible !important;
   }
@@ -3932,6 +3940,7 @@ ytmusic-app-layout:has(> ytmusic-player-page[player-fullscreened]) :is(#mini-gui
   ytmusic-player-page #player.ytmusic-player-page #song-media-window .top-row-buttons,
   ytmusic-player-bar ytmusic-like-button-renderer *,
   .autoscroll-resume-button,
+  .autoscroll-resume-button[autoscroll-hidden="true"],
   .blyrics-dock__inner,
   .blyrics-dock__control,
   .blyrics-dock__cycle,
