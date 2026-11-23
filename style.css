@@ -567,22 +567,22 @@ $spicy-bg-motion: false;
   filter: none;
 }
 
-.blyrics-container > .blyrics--line:not(.blyrics--active):hover {
+.blyrics-container:not(.blyrics-user-scrolling) > .blyrics--line:not(.blyrics--active):hover {
   --blyrics-lyric-inactive-color: color(display-p3 1 1 1 / 0.75);
 }
 
-.blyrics-container > .blyrics--line:not(.blyrics--active):hover .blyrics-background-line {
+.blyrics-container:not(.blyrics-user-scrolling) > .blyrics--line:not(.blyrics--active):hover .blyrics-background-line {
   --blyrics-lyric-inactive-color: color(display-p3 1 1 1 / 0.5);
 }
 
 /* active line hover: glowing illumination */
-.blyrics-container > .blyrics--active:hover {
+.blyrics-container:not(.blyrics-user-scrolling) > .blyrics--active:hover {
   text-shadow: var(--spicy-active-hover-glow);
   --blyrics-lyric-inactive-color: color(display-p3 1 1 1 / 0.95);
   --blyrics-lyric-active-color: color(display-p3 1 1 1 / 1);
 }
 
-.blyrics-container > .blyrics--active:hover .blyrics-background-line {
+.blyrics-container:not(.blyrics-user-scrolling) > .blyrics--active:hover .blyrics-background-line {
   text-shadow: none;
 }
 
@@ -618,6 +618,14 @@ $spicy-bg-motion: false;
 .blyrics-container:not([data-sync="none"]) > .blyrics--line:not(.blyrics--instrumental):hover::before {
   opacity: 1;
   scale: 1;
+}
+
+/* While manual scrolling is active, drop the 400ms spring scale animation
+   on passing lines so lines flying under a stationary pointer only toggle
+   a lightweight opacity highlight without spawning dozens of transitions. */
+.blyrics-container.blyrics-user-scrolling:not([data-sync="none"]) > .blyrics--line:not(.blyrics--instrumental)::before {
+  scale: 1;
+  transition: opacity 0.12s ease;
 }
 
 /* manual scrolling (autoscroll paused): show everything sharp. In YTM the
@@ -2900,10 +2908,9 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 /* ---------------------------------------------------------------------------
    8b. Autoscroll Pill & Controls Dock (Spicy 6.5.0 GroupedViewControls
        & ScrollToActive material)
-       Uses Spicy 6.5.0 frosted glass capsule material: subtle 8% white tint,
-       blur(24px) contrast(0.6) brightness(0.8) saturate(1.8), crisp inner
-       highlight rim, inner hover disc on Scroll to Active, and high-contrast
-       knockout white active disc on dock toggles.
+       Uses a matching semi-translucent dark capsule surface without per-frame
+       backdrop blur, crisp inner highlight rim, inner hover disc on Scroll to
+       Active, and high-contrast knockout white active disc on dock toggles.
    ------------------------------------------------------------------------ */
 .autoscroll-resume-button {
   isolation: isolate;
@@ -2916,9 +2923,9 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
   padding: 10px 22px !important;
   border: none !important;
   border-radius: 999px !important;
-  background: var(--spicy-capsule-bg) !important;
-  -webkit-backdrop-filter: var(--spicy-capsule-filter) !important;
-  backdrop-filter: var(--spicy-capsule-filter) !important;
+  background: var(--spicy-player-capsule-bg) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
   box-shadow: var(--spicy-capsule-shadow) !important;
   text-shadow: none !important;
   transition:
@@ -2942,7 +2949,7 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 
 .autoscroll-resume-button:hover {
   color: #fff !important;
-  background: var(--spicy-capsule-hover-bg) !important;
+  background: var(--spicy-player-capsule-hover-bg) !important;
   text-shadow: none !important;
   box-shadow: var(--spicy-capsule-hover-shadow) !important;
 }
@@ -2953,19 +2960,6 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 
 .autoscroll-resume-button:active {
   scale: 0.95;
-}
-
-.autoscroll-resume-button[autoscroll-hidden="true"] {
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
-  transition:
-    opacity 0.15s linear 50ms,
-    transform 0.25s cubic-bezier(0.23, 1, 0.32, 1),
-    background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1),
-    scale 0.15s cubic-bezier(0.4, 0, 0.2, 1),
-    -webkit-backdrop-filter 0s linear 0.2s,
-    backdrop-filter 0s linear 0.2s !important;
 }
 
 /* Controls dock: Spicy 6.5.0 frosted glass capsule with neutral iOS-mono
@@ -3863,7 +3857,6 @@ ytmusic-search-box #suggestion-list {
   ytmusic-app-layout #mini-guide-background,
   ytmusic-player-bar ytmusic-like-button-renderer *,
   .autoscroll-resume-button,
-  .autoscroll-resume-button[autoscroll-hidden="true"],
   .blyrics-dock__inner,
   .blyrics-dock__control,
   .blyrics-dock__cycle,
